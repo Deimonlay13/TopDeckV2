@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+sprint:
+  application:
+    name: ms-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        
