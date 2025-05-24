@@ -20,6 +20,9 @@
 
   <modules>
   <module>ms-pokeapi</module>
+  <module>ms-eureka</module>
+  <module>ms-config</module>
+  <module>ms-gateway</module>
   </modules>
 
   <properties>

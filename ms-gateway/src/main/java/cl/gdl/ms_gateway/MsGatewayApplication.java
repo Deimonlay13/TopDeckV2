@@ -1,15 +1,15 @@
-package cl.gdl.ms_pokeapi;
+package cl.gdl.ms_gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-@SpringBootApplication
 @EnableDiscoveryClient
-public class MsPokeapiApplication {
+@SpringBootApplication
+public class MsGatewayApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MsPokeapiApplication.class, args);
+		SpringApplication.run(MsGatewayApplication.class, args);
 	}
 
 }
