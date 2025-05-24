@@ -1,4 +1,4 @@
-package cl.gdl.pokeapi.controller;
+package cl.gdl.ms_pokeapi.controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.gdl.pokeapi.dto.PokeCardDTO;
-import cl.gdl.pokeapi.service.IPokeCardService;
+import cl.gdl.ms_pokeapi.dto.PokeCardDTO;
+import cl.gdl.ms_pokeapi.service.IPokeCardService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController

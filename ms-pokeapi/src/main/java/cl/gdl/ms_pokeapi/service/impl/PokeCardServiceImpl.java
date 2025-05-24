@@ -1,4 +1,4 @@
-package cl.gdl.pokeapi.service.impl;
+package cl.gdl.ms_pokeapi.service.impl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 
-import cl.gdl.pokeapi.dto.PokeCardDTO;
-import cl.gdl.pokeapi.response.PokeCardResponse;
-import cl.gdl.pokeapi.service.IPokeCardService;
+import cl.gdl.ms_pokeapi.dto.PokeCardDTO;
+import cl.gdl.ms_pokeapi.response.PokeCardResponse;
+import cl.gdl.ms_pokeapi.service.IPokeCardService;
 
 @Service
 public class PokeCardServiceImpl implements IPokeCardService{

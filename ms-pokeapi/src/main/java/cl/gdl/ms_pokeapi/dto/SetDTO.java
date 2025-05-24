@@ -1,4 +1,4 @@
-package cl.gdl.pokeapi.dto;
+package cl.gdl.ms_pokeapi.dto;
 
 
 import lombok.Data;

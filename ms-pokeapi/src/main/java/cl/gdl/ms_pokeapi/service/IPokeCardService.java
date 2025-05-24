@@ -1,9 +1,9 @@
-package cl.gdl.pokeapi.service;
+package cl.gdl.ms_pokeapi.service;
 
 import java.io.IOException;
 import java.util.List;
 
-import cl.gdl.pokeapi.dto.PokeCardDTO;
+import cl.gdl.ms_pokeapi.dto.PokeCardDTO;
 
 public interface IPokeCardService {
 

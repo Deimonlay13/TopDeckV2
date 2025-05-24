@@ -1,8 +1,8 @@
-package cl.gdl.pokeapi.response;
+package cl.gdl.ms_pokeapi.response;
 
 import java.util.List;
 
-import cl.gdl.pokeapi.dto.PokeCardDTO;
+import cl.gdl.ms_pokeapi.dto.PokeCardDTO;
 
 public class PokeCardResponse {
     List<PokeCardDTO> data;
