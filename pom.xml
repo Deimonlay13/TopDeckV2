@@ -23,6 +23,7 @@
   <module>ms-eureka</module>
   <module>ms-config</module>
   <module>ms-gateway</module>
+  <module>ms-pedido</module>
   </modules>
 
   <properties>
