@@ -19,6 +19,7 @@
   <packaging>pom</packaging>
 
   <modules>
+  <module>ms-users</module>
   <module>ms-pokeapi</module>
   <module>ms-eureka</module>
   <module>ms-config</module>
