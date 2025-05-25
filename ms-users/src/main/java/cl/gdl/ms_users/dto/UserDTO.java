@@ -14,7 +14,7 @@ import lombok.Value;
 @RequiredArgsConstructor
 @Builder
 public class UserDTO implements Serializable{
-
+    private String username;
     private String email;
     private String firstName;
     private String lastName;

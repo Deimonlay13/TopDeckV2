@@ -109,4 +109,10 @@ public class KeycloakServiceImpl implements IKeycloakService{
         UserResource usersResource = KeycloakProvider.getUserResource().get(userId);
         usersResource.update(user);
     }
+
+    public List<UserRepresentation> searchUserByUsername(String username) {
+        return KeycloakProvider.getRealmResource()
+                .users()
+                .searchByUsername(username, true);
+    }
 }
