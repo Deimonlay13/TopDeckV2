@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.gdl.ms_pedido.dto.MedioDePagoDTO;
+import cl.gdl.ms_pedido.entity.MedioDePagoEntity;
 import cl.gdl.ms_pedido.service.IMedioDePagoService;
 
 @RestController
@@ -23,29 +23,28 @@ public class MedioDePagoController {
     @Autowired
     IMedioDePagoService medioDePagoService;
     
-    @PostMapping("/insert")
-    public MedioDePagoDTO insert(@RequestBody MedioDePagoDTO medioDePago){
+    @PostMapping
+    public MedioDePagoEntity insert(@RequestBody MedioDePagoEntity medioDePago) {
         return medioDePagoService.insert(medioDePago);
     }
-    
-    @PutMapping("update/{id}")
-    public MedioDePagoDTO update(@PathVariable UUID id, @RequestBody MedioDePagoDTO medioDePago){
+
+    @PutMapping("/{id}")
+    public MedioDePagoEntity update(@PathVariable UUID id, @RequestBody MedioDePagoEntity medioDePago) {
         return medioDePagoService.update(id, medioDePago);
     }
 
-    @DeleteMapping("delete/{id}")
-    public MedioDePagoDTO delete(@PathVariable UUID id){
+    @DeleteMapping("/{id}")
+    public MedioDePagoEntity delete(@PathVariable UUID id) {
         return medioDePagoService.delete(id);
     }
 
-    
-    @GetMapping("getById/{id}")
-    public MedioDePagoDTO getById(@PathVariable UUID id){
+    @GetMapping("/{id}")
+    public MedioDePagoEntity getById(@PathVariable UUID id) {
         return medioDePagoService.getById(id);
     }
 
     @GetMapping
-    public List<MedioDePagoDTO> getAll(){
+    public List<MedioDePagoEntity> getAll() {
         return medioDePagoService.getAll();
     }
 }

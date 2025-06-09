@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cl.gdl.ms_pedido.dto.EstadoPedidoDTO;
+import cl.gdl.ms_pedido.entity.EstadoPedidoEntity;
 import cl.gdl.ms_pedido.errors.DuplicatedNameException;
 import cl.gdl.ms_pedido.errors.NameNullException;
 import cl.gdl.ms_pedido.errors.NoDataException;
@@ -20,64 +20,66 @@ public class EstadoPedidoServiceImpl  implements IEstadoPedidoService {
     IEstadoPedidoRepository estadoPedidoRepository;
 
     @Override
-    public EstadoPedidoDTO insert(EstadoPedidoDTO estadoPedido) {
-        checkNameEstadoPedidoNotNullOrEmpty(estadoPedido.getNameEstadoPedido());
-
-        checkEstadoPedidoNameNotExists(estadoPedido.getNameEstadoPedido());
+    public EstadoPedidoEntity insert(EstadoPedidoEntity estadoPedido) {
+        checkNameEstadoPedidoNotNullOrEmpty(estadoPedido.getNombre());
+        checkEstadoPedidoNameNotExists(estadoPedido.getNombre());
 
         return estadoPedidoRepository.save(estadoPedido);
     }
 
     @Override
-    public EstadoPedidoDTO update(UUID id, EstadoPedidoDTO estadoPedido) {
-        checkEstadoPedidoExists(id);
+    public EstadoPedidoEntity update(UUID id, EstadoPedidoEntity estadoPedido) {
+        EstadoPedidoEntity existing = checkEstadoPedidoExists(id);
 
-        checkNameEstadoPedidoNotNullOrEmpty(estadoPedido.getNameEstadoPedido());
+        checkNameEstadoPedidoNotNullOrEmpty(estadoPedido.getNombre());
 
-        checkEstadoPedidoNameNotExists(estadoPedido.getNameEstadoPedido());
+        if (!existing.getNombre().equalsIgnoreCase(estadoPedido.getNombre())) {
+            checkEstadoPedidoNameNotExists(estadoPedido.getNombre());
+        }
 
-        estadoPedido.setIdEstadoPedido(id);
-        return estadoPedidoRepository.save(estadoPedido);
+        existing.setNombre(estadoPedido.getNombre());
+
+        return estadoPedidoRepository.save(existing);
     }
 
     @Override
-    public EstadoPedidoDTO delete(UUID id) {
-        checkEstadoPedidoExists(id);
+    public EstadoPedidoEntity delete(UUID id) {
+        EstadoPedidoEntity existing = checkEstadoPedidoExists(id);
 
         estadoPedidoRepository.deleteById(id);
-        return null;
+
+        return existing;
     }
 
     @Override
-    public EstadoPedidoDTO getById(UUID id) {
-        checkEstadoPedidoExists(id);
-        return estadoPedidoRepository.findById(id).get();
+    public EstadoPedidoEntity getById(UUID id) {
+        return checkEstadoPedidoExists(id);
     }
 
     @Override
-    public List<EstadoPedidoDTO> getAll() {
-        List<EstadoPedidoDTO> estadoPedidos = (List<EstadoPedidoDTO>) estadoPedidoRepository.findAll();
-        if (estadoPedidos.isEmpty()) {
+    public List<EstadoPedidoEntity> getAll() {
+        List<EstadoPedidoEntity> estados = (List<EstadoPedidoEntity>) estadoPedidoRepository.findAll();
+        if (estados.isEmpty()) {
             throw new NoDataException();
         }
-        return estadoPedidos;
+        return estados;
     }
 
     private void checkNameEstadoPedidoNotNullOrEmpty(String nameEstadoPedido) {
-        if (nameEstadoPedido == null || nameEstadoPedido.trim().isEmpty()) {
-            throw new NameNullException("nameEstadoPedido");
-        }
+    if (nameEstadoPedido == null || nameEstadoPedido.trim().isEmpty()) {
+        throw new NameNullException("nameEstadoPedido");
     }
+}
 
-    private EstadoPedidoDTO checkEstadoPedidoExists(UUID id) {
-        return estadoPedidoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("El Medio De Pago con el ID: " + id + " no existe"));
+    private EstadoPedidoEntity checkEstadoPedidoExists(UUID id) {
+    return estadoPedidoRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("El EstadoPedido con el ID: " + id + " no existe"));
     }
 
     private void checkEstadoPedidoNameNotExists(String nameEstadoPedido) {
-        estadoPedidoRepository.findByNameEstadoPedidoIgnoreCase(nameEstadoPedido)
-                .ifPresent(existingEstadoPedido -> {
-                    throw new DuplicatedNameException(nameEstadoPedido);
-                });
+        estadoPedidoRepository.findByNombreIgnoreCase(nameEstadoPedido)
+        .ifPresent(existingEstadoPedido -> {
+            throw new DuplicatedNameException(nameEstadoPedido);
+        });
     }
 }

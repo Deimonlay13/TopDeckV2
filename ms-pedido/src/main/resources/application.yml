@@ -5,20 +5,35 @@ server:
 spring:
   application:
     name: ms-pedido
+
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
     url: jdbc:oracle:thin:@www.portalacademico.cl:49161/xe
     username: apex_us_dsy_08_gdl
     password: macarena
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update  # ⚠️ Solo para desarrollo. Cambiar a 'none' o usar Flyway/Liquibase en producción
     database: oracle
     database-platform: org.hibernate.dialect.OracleDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # Muestra valores reales de parámetros en SQL
 
 eureka:
   instance:
     hostname: localhost
+    leaseRenewalIntervalInSeconds: 10
+    leaseExpirationDurationInSeconds: 30
   client:
-    serviceUrl:
+    service-url:
       defaultZone: http://localhost:8761/eureka

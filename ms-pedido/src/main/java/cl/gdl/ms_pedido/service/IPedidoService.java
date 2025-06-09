@@ -3,18 +3,18 @@ package cl.gdl.ms_pedido.service;
 import java.util.List;
 import java.util.UUID;
 
-import cl.gdl.ms_pedido.dto.PedidoDTO;
+
+import cl.gdl.ms_pedido.entity.PedidoEntity;
 
 public interface IPedidoService {
 
-    PedidoDTO insert(PedidoDTO pedido);
+    PedidoEntity insert(PedidoEntity pedido);
 
-    PedidoDTO update(UUID id, PedidoDTO pedido);
+    PedidoEntity update(UUID id, PedidoEntity pedido);
 
-    PedidoDTO delete(UUID id);
+    PedidoEntity delete(UUID id);
 
-    PedidoDTO getById(UUID id);
+    PedidoEntity getById(UUID id);
 
-    List<PedidoDTO> getAll();
-
+    List<PedidoEntity> getAll();
 }

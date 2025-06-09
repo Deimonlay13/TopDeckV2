@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cl.gdl.ms_pedido.dto.MedioDePagoDTO;
+import cl.gdl.ms_pedido.entity.MedioDePagoEntity;
 import cl.gdl.ms_pedido.errors.DuplicatedNameException;
 import cl.gdl.ms_pedido.errors.NameNullException;
 import cl.gdl.ms_pedido.errors.NoDataException;
@@ -21,66 +21,67 @@ public class MedioDePagoService implements IMedioDePagoService{
     IMedioDePagoRepository medioDePagoRepository;
 
     @Override
-    public MedioDePagoDTO insert(MedioDePagoDTO medioDePago) {
-        checkNameMedioDePagoNotNullOrEmpty(medioDePago.getNameMedioDePago());
-
-        checkMedioDePagoNameNotExists(medioDePago.getNameMedioDePago());
+    public MedioDePagoEntity insert(MedioDePagoEntity medioDePago) {
+        checkNombreNotNullOrEmpty(medioDePago.getNombre());
+        checkNombreNotExists(medioDePago.getNombre());
 
         return medioDePagoRepository.save(medioDePago);
     }
 
-    
     @Override
-    public MedioDePagoDTO update(UUID id, MedioDePagoDTO medioDePago) {
-        checkMedioDePagoExists(id);
+    public MedioDePagoEntity update(UUID id, MedioDePagoEntity medioDePago) {
+        MedioDePagoEntity existing = checkExists(id);
 
-        checkNameMedioDePagoNotNullOrEmpty(medioDePago.getNameMedioDePago());
+        checkNombreNotNullOrEmpty(medioDePago.getNombre());
 
-        checkMedioDePagoNameNotExists(medioDePago.getNameMedioDePago());
+        if (!existing.getNombre().equalsIgnoreCase(medioDePago.getNombre())) {
+            checkNombreNotExists(medioDePago.getNombre());
+        }
 
-        medioDePago.setIdMedioDePago(id);
-        return medioDePagoRepository.save(medioDePago);
+        existing.setNombre(medioDePago.getNombre());
+
+        return medioDePagoRepository.save(existing);
     }
 
     @Override
-    public MedioDePagoDTO delete(UUID id) {
-        checkMedioDePagoExists(id);
+    public MedioDePagoEntity delete(UUID id) {
+        MedioDePagoEntity existing = checkExists(id);
 
         medioDePagoRepository.deleteById(id);
-        return null;
+
+        return existing;
     }
 
     @Override
-    public MedioDePagoDTO getById(UUID id) {
-        checkMedioDePagoExists(id);
-        return medioDePagoRepository.findById(id).get();
+    public MedioDePagoEntity getById(UUID id) {
+        return checkExists(id);
     }
 
     @Override
-    public List<MedioDePagoDTO> getAll() {
-        List<MedioDePagoDTO> mediosDePagos = (List<MedioDePagoDTO>) medioDePagoRepository.findAll();
-        if (mediosDePagos.isEmpty()) {
+    public List<MedioDePagoEntity> getAll() {
+        List<MedioDePagoEntity> medios = (List<MedioDePagoEntity>) medioDePagoRepository.findAll();
+        if (medios.isEmpty()) {
             throw new NoDataException();
         }
-        return mediosDePagos;
+        return medios;
     }
 
-    private void checkMedioDePagoNameNotExists(String nameMedioDePago) {
-        medioDePagoRepository.findByNameMedioDePagoIgnoreCase(nameMedioDePago)
-                .ifPresent(existingMedioDePago -> {
-                    throw new DuplicatedNameException(nameMedioDePago);
-                });
-    }
-
-    private void checkNameMedioDePagoNotNullOrEmpty(String nameMedioDePago) {
-        if (nameMedioDePago == null || nameMedioDePago.trim().isEmpty()) {
-            throw new NameNullException("nameMedioDePago");
+    // Validaciones privadas
+    private void checkNombreNotNullOrEmpty(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new NameNullException("nombre");
         }
     }
 
-    private MedioDePagoDTO checkMedioDePagoExists(UUID id) {
-        return medioDePagoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("El Medio De Pago con el ID: " + id + " no existe"));
+    private void checkNombreNotExists(String nombre) {
+        medioDePagoRepository.findByNombreIgnoreCase(nombre)
+            .ifPresent(e -> {
+                throw new DuplicatedNameException(nombre);
+            });
     }
 
+    private MedioDePagoEntity checkExists(UUID id) {
+        return medioDePagoRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("El Medio De Pago con el ID: " + id + " no existe"));
+    }
 }

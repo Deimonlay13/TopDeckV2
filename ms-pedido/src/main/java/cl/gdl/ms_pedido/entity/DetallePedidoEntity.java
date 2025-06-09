@@ -3,8 +3,11 @@ package cl.gdl.ms_pedido.entity;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -21,7 +24,9 @@ import lombok.NoArgsConstructor;
 public class DetallePedidoEntity {
 
     @Id
-    @Column(name = "id_detalle")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id_detalle", columnDefinition = "RAW(16)", updatable = false, nullable = false)
     private UUID id;
 
     @ManyToOne

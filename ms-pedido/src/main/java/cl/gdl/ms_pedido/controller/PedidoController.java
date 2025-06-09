@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import cl.gdl.ms_pedido.dto.PedidoDTO;
+import cl.gdl.ms_pedido.entity.PedidoEntity;
 import cl.gdl.ms_pedido.service.IPedidoService;
 
 @RestController
@@ -21,28 +22,34 @@ public class PedidoController {
     @Autowired
     IPedidoService pedidoService;
 
-    @PostMapping("/insert")
-    public PedidoDTO insert(@RequestBody PedidoDTO pedido){
-        return pedidoService.insert(pedido);
+    
+    @PostMapping
+    public ResponseEntity<PedidoEntity> createPedido(@RequestBody PedidoEntity pedido) {
+        PedidoEntity nuevoPedido = pedidoService.insert(pedido);
+        return ResponseEntity.status(201).body(nuevoPedido);
     }
 
-    @PutMapping("/update/{id}")
-    public PedidoDTO update(@PathVariable UUID id, @RequestBody PedidoDTO pedido){
-        return pedidoService.update(id,pedido);
+    @PutMapping("/{id}")
+    public ResponseEntity<PedidoEntity> updatePedido(@PathVariable UUID id, @RequestBody PedidoEntity pedido) {
+        PedidoEntity pedidoActualizado = pedidoService.update(id, pedido);
+        return ResponseEntity.ok(pedidoActualizado);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public PedidoDTO delete(@PathVariable UUID id){
-        return pedidoService.delete(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePedido(@PathVariable UUID id) {
+        pedidoService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/getById/{id}")
-    public PedidoDTO getById(@PathVariable UUID id){
-        return  pedidoService.getById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<PedidoEntity> getPedidoById(@PathVariable UUID id) {
+        PedidoEntity pedido = pedidoService.getById(id);
+        return ResponseEntity.ok(pedido);
     }
 
     @GetMapping
-    public List<PedidoDTO> getAll(){
-        return pedidoService.getAll();
+    public ResponseEntity<List<PedidoEntity>> getAllPedidos() {
+        List<PedidoEntity> pedidos = pedidoService.getAll();
+        return ResponseEntity.ok(pedidos);
     }
 }

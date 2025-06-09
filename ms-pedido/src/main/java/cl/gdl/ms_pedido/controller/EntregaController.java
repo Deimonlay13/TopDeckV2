@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.gdl.ms_pedido.dto.EntregaDTO;
+
+import cl.gdl.ms_pedido.entity.EntregaEntity;
 import cl.gdl.ms_pedido.service.IEntregaService;
 
 @RestController
@@ -24,28 +25,27 @@ public class EntregaController {
     private IEntregaService entregaService;
 
     @PostMapping("/insert")
-    public EntregaDTO insert(@RequestBody EntregaDTO entrega) {
+    public EntregaEntity insert(@RequestBody EntregaEntity entrega) {
         return entregaService.insert(entrega);
     }
 
     @PutMapping("/update/{id}")
-    public EntregaDTO update(@PathVariable UUID id, @RequestBody EntregaDTO entrega) {
+    public EntregaEntity update(@PathVariable UUID id, @RequestBody EntregaEntity entrega) {
         return entregaService.update(id, entrega);
     }
 
     @DeleteMapping("/delete/{id}")
-    public EntregaDTO delete(@PathVariable UUID id) {
+    public EntregaEntity delete(@PathVariable UUID id) {
         return entregaService.delete(id);
     }
 
     @GetMapping("/getById/{id}")
-    public EntregaDTO getById(@PathVariable UUID id) {
+    public EntregaEntity getById(@PathVariable UUID id) {
         return entregaService.getById(id);
     }
 
     @GetMapping
-    public List<EntregaDTO> getAll() {
+    public List<EntregaEntity> getAll() {
         return entregaService.getAll();
     }
-
 }
