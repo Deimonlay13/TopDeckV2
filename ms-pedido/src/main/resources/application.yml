@@ -1,0 +1,24 @@
+
+server:
+  port: 8092
+
+spring:
+  application:
+    name: ms-pedido
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@www.portalacademico.cl:49161/xe
+    username: apex_us_dsy_08_gdl
+    password: macarena
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: oracle
+    database-platform: org.hibernate.dialect.OracleDialect
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
