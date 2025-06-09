@@ -28,7 +28,7 @@ public class KeycloakController {
 
     @GetMapping("/search/{username}")
     public ResponseEntity<?> searchUserByUsername(@PathVariable String username){
-         return ResponseEntity.ok(keycloakService.searchUserByUsername(username));
+        return ResponseEntity.ok(keycloakService.searchUserByUsername(username));
     }
 
 

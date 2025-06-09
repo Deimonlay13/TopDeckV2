@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cl.gdl.ms_pedido.dto.EntregaDTO;
+import cl.gdl.ms_pedido.entity.EntregaEntity;
 import cl.gdl.ms_pedido.errors.DuplicatedNameException;
 import cl.gdl.ms_pedido.errors.NameNullException;
 import cl.gdl.ms_pedido.errors.NoDataException;
@@ -22,10 +23,16 @@ public class EntregaServiceImpl implements IEntregaService{
     @Override
     public EntregaDTO insert(EntregaDTO entrega) {
         checkNameEntregaNotNullOrEmpty(entrega.getEntrega());
-
         checkEntregaNameNotExists(entrega.getEntrega());
 
-        return entregaRepository.save(entrega);
+        EntregaEntity entity = new EntregaEntity(
+            entrega.getIdEntrega(),
+            entrega.getEntrega()
+        );
+        
+
+        entregaRepository.save(entity);
+        return entregaRepository.findByNameEntrega(entrega.getEntrega());
     }
 
     @Override
@@ -71,7 +78,7 @@ public class EntregaServiceImpl implements IEntregaService{
 
     private EntregaDTO checkEntregaExists(UUID id) {
         return entregaRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("El Medio De Pago con el ID: " + id + " no existe"));
+                .orElseThrow(() -> new NotFoundException("La Entrega con el ID: " + id + " no existe"));
     }
 
     private void checkEntregaNameNotExists(String nameEntrega) {
