@@ -5,6 +5,11 @@ server:
 spring:
   application:
     name: ms-pedido
+    cloud:
+    compatibility:
+      enabled: false  # Habilita compatibilidad con versiones anteriores de Spring Cloud
+  config:
+    import: optional:configserver:http://localhost:8888  # URL del servidor de configuración
 
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver

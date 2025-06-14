@@ -15,7 +15,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cl.gdl.ms_pokeapi.dto.PokeCardDTO;
 import cl.gdl.ms_pokeapi.response.PokeCardResponse;
@@ -47,8 +47,8 @@ public class PokeCardServiceImpl implements IPokeCardService{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            Gson gson = new Gson();
-            PokeCardResponse cardResponse = gson.fromJson(response.body(), PokeCardResponse.class);
+            ObjectMapper mapper = new ObjectMapper();
+            PokeCardResponse cardResponse = mapper.readValue(response.body(), PokeCardResponse.class);
             return cardResponse.getData();
         } else {
             throw new IOException("Error al obtener cartas, código de estado: " + response.statusCode());
@@ -72,11 +72,11 @@ public class PokeCardServiceImpl implements IPokeCardService{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            Gson gson = new Gson();
-            PokeCardResponse cardResponse = gson.fromJson(response.body(), PokeCardResponse.class);
+            ObjectMapper mapper = new ObjectMapper();
+            PokeCardResponse cardResponse = mapper.readValue(response.body(), PokeCardResponse.class);
             return cardResponse.getData();
         } else {
-            throw new IOException("Error al obtener cartas por nombre, código de estado: " + response.statusCode());
+            throw new IOException("Error al obtener cartas, código de estado: " + response.statusCode());
         }
     }
 
@@ -95,11 +95,11 @@ public class PokeCardServiceImpl implements IPokeCardService{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            Gson gson = new Gson();
-            PokeCardResponse cardResponse = gson.fromJson(response.body(), PokeCardResponse.class);
+            ObjectMapper mapper = new ObjectMapper();
+            PokeCardResponse cardResponse = mapper.readValue(response.body(), PokeCardResponse.class);
             return cardResponse.getData();
         } else {
-            throw new IOException("Error al obtener la serie de las cartas, código de estado: " + response.statusCode());
+            throw new IOException("Error al obtener cartas, código de estado: " + response.statusCode());
         }
     }
 
@@ -118,11 +118,11 @@ public class PokeCardServiceImpl implements IPokeCardService{
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            Gson gson = new Gson();
-            PokeCardResponse cardResponse = gson.fromJson(response.body(), PokeCardResponse.class);
+            ObjectMapper mapper = new ObjectMapper();
+            PokeCardResponse cardResponse = mapper.readValue(response.body(), PokeCardResponse.class);
             return cardResponse.getData();
         } else {
-            throw new IOException("Error al obtener cartas por fecha, codigo de estado: " + response.statusCode());
+            throw new IOException("Error al obtener cartas, código de estado: " + response.statusCode());
         }
 }
 }

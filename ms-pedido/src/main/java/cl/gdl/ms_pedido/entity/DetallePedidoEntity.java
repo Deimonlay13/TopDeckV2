@@ -3,11 +3,12 @@ package cl.gdl.ms_pedido.entity;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import org.hibernate.annotations.GenericGenerator;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -24,17 +25,17 @@ import lombok.NoArgsConstructor;
 public class DetallePedidoEntity {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id_detalle", columnDefinition = "RAW(16)", updatable = false, nullable = false)
+    @GeneratedValue(strategy=GenerationType.UUID)
+    @Column(name = "id_detalle")
     private UUID id;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id_pedido")
     private PedidoEntity pedido;
     
     @Column(name = "id_producto")
-    private UUID idProducto;
+    private String idProducto;
 
     @Column(name = "cantidad")
     private int cantidad;

@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cl.gdl.ms_pedido.entity.DetallePedidoEntity;
 import cl.gdl.ms_pedido.entity.PedidoEntity;
 import cl.gdl.ms_pedido.errors.NoDataException;
 import cl.gdl.ms_pedido.errors.NotFoundException;
@@ -20,16 +21,27 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     public PedidoEntity insert(PedidoEntity pedido) {
-        // No debe existir un pedido con ese id (pero si usas UUID generado, no debería venir seteado)
         if (pedido.getId() != null && pedidoRepository.existsById(pedido.getId())) {
             throw new NotFoundException("El Pedido con el ID: " + pedido.getId() + " ya existe");
         }
         checkPedidoTotalNotNull(pedido.getTotal());
+        
+    // Asociar el pedido en cada detalle
+        if (pedido.getDetalles() != null) {
+        for (DetallePedidoEntity detalle : pedido.getDetalles()) {
+            detalle.setPedido(pedido);
 
-        // Si quieres, puedes también asegurarte que las relaciones no sean null (medioDePago, estadoPedido, etc)
+            // Calcular subtotal si no viene
+            if (detalle.getSubtotal() == null) {
+                BigDecimal subtotal = detalle.getPrecioUnitario().multiply(BigDecimal.valueOf(detalle.getCantidad()));
+                detalle.setSubtotal(subtotal);
+            }
+        }}
 
+        
+        
         return pedidoRepository.save(pedido);
-    }
+        }
 
     @Override
     public PedidoEntity update(UUID id, PedidoEntity pedido) {
