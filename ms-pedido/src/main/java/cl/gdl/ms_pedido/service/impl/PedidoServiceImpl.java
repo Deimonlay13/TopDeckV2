@@ -7,6 +7,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cl.gdl.ms_pedido.client.IUsuarioClient;
+import cl.gdl.ms_pedido.dto.PedidoConUsuarioDTO;
+import cl.gdl.ms_pedido.dto.UsuarioDTO;
 import cl.gdl.ms_pedido.entity.DetallePedidoEntity;
 import cl.gdl.ms_pedido.entity.PedidoEntity;
 import cl.gdl.ms_pedido.errors.NoDataException;
@@ -16,6 +19,11 @@ import cl.gdl.ms_pedido.service.IPedidoService;
 
 @Service
 public class PedidoServiceImpl implements IPedidoService {
+
+    @Autowired
+    private IUsuarioClient usuarioClient;
+
+
     @Autowired
     IPedidoRepository pedidoRepository;
 
@@ -80,6 +88,16 @@ public class PedidoServiceImpl implements IPedidoService {
         }
         return pedidos;
     }
+    
+    public PedidoConUsuarioDTO getPedidoConUsuario(UUID idPedido) {
+        PedidoEntity pedido = checkPedidoExists(idPedido);
+        System.out.println("LLAMANDO A MS-USERS");
+        System.out.println("Id usuario pedido: " + pedido.getIdUsuario());
+        UsuarioDTO usuario = usuarioClient.getUsuarioById(pedido.getIdUsuario());
+        System.out.println("Usuario obtenido: " + usuario);        
+
+        return new PedidoConUsuarioDTO(pedido, usuario);
+    }    
 
     private PedidoEntity checkPedidoExists(UUID idPedido) {
         return pedidoRepository.findById(idPedido)

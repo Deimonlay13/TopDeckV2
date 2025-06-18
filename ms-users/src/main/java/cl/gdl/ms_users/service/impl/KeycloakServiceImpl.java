@@ -115,4 +115,19 @@ public class KeycloakServiceImpl implements IKeycloakService{
                 .users()
                 .searchByUsername(username, true);
     }
+
+    @Override
+    public UserDTO getUserDTOById(String userId) {
+        UserResource userResource = KeycloakProvider.getUserResource().get(userId);
+        UserRepresentation user = userResource.toRepresentation();
+
+        UserDTO dto = new UserDTO();
+        dto.setUsername(user.getUsername());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setEmail(user.getEmail());
+
+        return dto;
+    }
+    
 }

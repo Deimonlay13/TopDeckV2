@@ -51,4 +51,12 @@ public class KeycloakController {
         keycloakService.deleteUser(userId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{idUsuario}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable String idUsuario) {
+        UserDTO dto = keycloakService.getUserDTOById(idUsuario);
+        System.out.println("📥 Se recibió una petición GET a /keycloak/user/" + idUsuario);
+        return ResponseEntity.ok(dto);
+    }
+
 }

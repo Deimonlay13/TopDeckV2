@@ -1,15 +1,11 @@
-
-server:
-  port: 8092
-
 spring:
   application:
     name: ms-pedido
-    cloud:
+  cloud:
     compatibility:
-      enabled: false  # Habilita compatibilidad con versiones anteriores de Spring Cloud
+      enabled: false
   config:
-    import: optional:configserver:http://localhost:8888  # URL del servidor de configuración
+    import: optional:configserver:http://localhost:8888
 
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
@@ -19,7 +15,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update  # ⚠️ Solo para desarrollo. Cambiar a 'none' o usar Flyway/Liquibase en producción
+      ddl-auto: update
     database: oracle
     database-platform: org.hibernate.dialect.OracleDialect
     show-sql: true
@@ -29,10 +25,16 @@ spring:
         jdbc:
           time_zone: UTC
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090/realms/spring-boot-realm-dev
+
 logging:
   level:
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # Muestra valores reales de parámetros en SQL
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 eureka:
   instance:

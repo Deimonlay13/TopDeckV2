@@ -29,3 +29,9 @@ jwt:
     converter:
       principle-attribute: preferred_username
       resource-id: spring-client-api-rest
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+

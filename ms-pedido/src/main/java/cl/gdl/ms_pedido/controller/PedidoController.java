@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import cl.gdl.ms_pedido.dto.PedidoConUsuarioDTO;
 import cl.gdl.ms_pedido.entity.PedidoEntity;
 import cl.gdl.ms_pedido.service.IPedidoService;
 
@@ -52,4 +55,14 @@ public class PedidoController {
         List<PedidoEntity> pedidos = pedidoService.getAll();
         return ResponseEntity.ok(pedidos);
     }
+
+    @GetMapping("/{id}/con-usuario")
+    public ResponseEntity<PedidoConUsuarioDTO> getPedidoConUsuario(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal(expression = "tokenValue") String token) {
+        // token aquí si lo necesitas
+        PedidoConUsuarioDTO dto = pedidoService.getPedidoConUsuario(id);
+        return ResponseEntity.ok(dto);
+    }    
+
 }

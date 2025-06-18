@@ -4,15 +4,18 @@ package cl.gdl.ms_users.dto;
 import java.io.Serializable;
 import java.util.Set;
 
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 
-@Value
-@RequiredArgsConstructor
-@Builder
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class UserDTO implements Serializable{
     private String username;
     private String email;

@@ -14,13 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UsuarioDTO {
 
-    private String idUsuario;
-
+    private String username;
+    
     private String email;
 
     private String firstName;
 
     private String lastName;
     
-    private UUID idPedido;
 } 

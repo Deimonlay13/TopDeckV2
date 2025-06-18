@@ -1,17 +1,18 @@
 package cl.gdl.ms_pedido.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import cl.gdl.ms_pedido.dto.UsuarioDTO;
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
+
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.List;
-import java.util.UUID;
-
-@FeignClient(name = "ms-user", url = "localhost:8090")
+@FeignClient(name = "ms-users")
 public interface IUsuarioClient {
 
-    @GetMapping("/api/user/search/{idPedido}")
-    List<UsuarioDTO> findAllUsuariosByPedidos(@PathVariable UUID idPedido);
-
+    @GetMapping("/keycloak/user/{idUsuario}")
+    UsuarioDTO getUsuarioById(@PathVariable("idUsuario") String idUsuario);
 }
+
