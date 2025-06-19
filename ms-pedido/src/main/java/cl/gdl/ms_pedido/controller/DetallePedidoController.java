@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.gdl.ms_pedido.dto.DetallePedidoCartaDTO;
 import cl.gdl.ms_pedido.entity.DetallePedidoEntity;
 import cl.gdl.ms_pedido.service.IDetallePedidoService;
 
@@ -47,6 +48,17 @@ public class DetallePedidoController {
     @GetMapping
     public List<DetallePedidoEntity> getAll() {
         return detallePedidoService.getAll();
+    }
+
+    @GetMapping("/pedido/{idPedido}")
+    public List<DetallePedidoEntity> getByPedidoId(@PathVariable UUID idPedido) {
+        return detallePedidoService.getByPedidoId(idPedido);
+    }
+    
+
+    @GetMapping("/pedido/{idPedido}/con-cartas")
+    public List<DetallePedidoCartaDTO> getDetallesConCartasPorPedido(@PathVariable UUID idPedido) {
+        return detallePedidoService.getDetallesConCartasPorPedido(idPedido);
     }
 }
 

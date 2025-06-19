@@ -60,9 +60,8 @@ public class PedidoController {
     public ResponseEntity<PedidoConUsuarioDTO> getPedidoConUsuario(
             @PathVariable UUID id,
             @AuthenticationPrincipal(expression = "tokenValue") String token) {
-        // token aquí si lo necesitas
         PedidoConUsuarioDTO dto = pedidoService.getPedidoConUsuario(id);
         return ResponseEntity.ok(dto);
     }    
-
+    
 }

@@ -1,11 +1,9 @@
 package cl.gdl.ms_pedido.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import cl.gdl.ms_pedido.dto.UsuarioDTO;
-import feign.RequestInterceptor;
-import feign.RequestTemplate;
+
 
 import org.springframework.web.bind.annotation.PathVariable;
 

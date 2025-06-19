@@ -1,6 +1,5 @@
 package cl.gdl.ms_pedido.dto;
 
-import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class UsuarioDTO {
 
     private String username;
-    
+
     private String email;
 
     private String firstName;

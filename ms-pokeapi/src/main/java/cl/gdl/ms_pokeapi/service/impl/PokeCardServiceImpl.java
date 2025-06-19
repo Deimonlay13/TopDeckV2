@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cl.gdl.ms_pokeapi.dto.PokeCardDTO;
@@ -124,5 +125,36 @@ public class PokeCardServiceImpl implements IPokeCardService{
         } else {
             throw new IOException("Error al obtener cartas, código de estado: " + response.statusCode());
         }
-}
+    }
+
+    @Override
+    public PokeCardDTO getCartaById(String id) throws IOException, InterruptedException {
+        String apiUrl = "https://api.pokemontcg.io/v2/cards/" + id;
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl))
+                .header("Accept", "application/json")
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response.body());
+            JsonNode dataNode = root.get("data");
+
+            if (dataNode == null || dataNode.isNull()) {
+                throw new IOException("Respuesta inválida: no se encontró campo 'data'");
+            }
+
+            PokeCardDTO carta = mapper.treeToValue(dataNode, PokeCardDTO.class);
+            System.out.println("Carta obtenida: " + carta);
+
+            return carta;
+        } else {
+            throw new IOException("Error al obtener carta, código de estado: " + response.statusCode());
+        }
+    }    
+
 }

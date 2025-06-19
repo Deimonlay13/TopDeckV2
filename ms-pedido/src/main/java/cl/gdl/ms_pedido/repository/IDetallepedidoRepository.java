@@ -17,4 +17,6 @@ public interface IDetallepedidoRepository extends CrudRepository<DetallePedidoEn
     public interface IDetallePedidoService {
     List<DetallePedidoEntity> insertAll(List<DetallePedidoEntity> detalles);
 }
+
+    List<DetallePedidoEntity> findByPedidoId(UUID idPedido);
 }

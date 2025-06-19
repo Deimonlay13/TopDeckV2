@@ -4,10 +4,14 @@ import java.math.BigDecimal;
 // import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cl.gdl.ms_pedido.client.ICartaClient;
+import cl.gdl.ms_pedido.dto.CartaDTO;
+import cl.gdl.ms_pedido.dto.DetallePedidoCartaDTO;
 import cl.gdl.ms_pedido.entity.DetallePedidoEntity;
 // import cl.gdl.ms_pedido.errors.DuplicatedNameException;
 // import cl.gdl.ms_pedido.errors.NameNullException;
@@ -18,6 +22,9 @@ import cl.gdl.ms_pedido.service.IDetallePedidoService;
 
 @Service
 public class DetallePedidoServiceimpl implements IDetallePedidoService {
+
+    @Autowired
+    private ICartaClient cartaClient;
 
     @Autowired
     private IDetallepedidoRepository detallePedidoRepository;
@@ -60,7 +67,34 @@ public DetallePedidoEntity update(UUID id, DetallePedidoEntity detalle) {
         throw new NoDataException();
     }
     return detalles;
+    }
+    
+
+public List<DetallePedidoEntity> getByPedidoId(UUID idPedido) {
+    return detallePedidoRepository.findByPedidoId(idPedido);
 }
+
+ @Override
+public List<DetallePedidoCartaDTO> getDetallesConCartasPorPedido(UUID idPedido) {
+    List<DetallePedidoEntity> detalles = detallePedidoRepository.findByPedidoId(idPedido);
+
+    return detalles.stream().map(detalle -> {
+        CartaDTO carta = cartaClient.getCartaPorId(detalle.getIdProducto());
+
+        DetallePedidoCartaDTO dto = new DetallePedidoCartaDTO();
+        dto.setId(detalle.getId());
+        dto.setIdProducto(detalle.getIdProducto());
+        dto.setCantidad(detalle.getCantidad());
+        dto.setPrecioUnitario(detalle.getPrecioUnitario());
+        dto.setSubtotal(detalle.getSubtotal());
+        dto.setCarta(carta);
+
+        return dto;
+    }).collect(Collectors.toList());
+}
+
+
+
 //private void checkDescripcionNotNullOrEmpty(UUID id) {
    // if (id == null || id.equals(new UUID(0L, 0L))) {
      //   throw new NameNullException("descripcion");

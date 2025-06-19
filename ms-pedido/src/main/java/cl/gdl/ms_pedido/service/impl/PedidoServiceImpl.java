@@ -7,7 +7,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cl.gdl.ms_pedido.client.ICartaClient;
 import cl.gdl.ms_pedido.client.IUsuarioClient;
+import cl.gdl.ms_pedido.dto.CartaDTO;
 import cl.gdl.ms_pedido.dto.PedidoConUsuarioDTO;
 import cl.gdl.ms_pedido.dto.UsuarioDTO;
 import cl.gdl.ms_pedido.entity.DetallePedidoEntity;
@@ -26,30 +28,41 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Autowired
     IPedidoRepository pedidoRepository;
+    @Autowired
+    ICartaClient cartaClient;
 
     @Override
     public PedidoEntity insert(PedidoEntity pedido) {
         if (pedido.getId() != null && pedidoRepository.existsById(pedido.getId())) {
             throw new NotFoundException("El Pedido con el ID: " + pedido.getId() + " ya existe");
         }
-        checkPedidoTotalNotNull(pedido.getTotal());
-        
-    // Asociar el pedido en cada detalle
-        if (pedido.getDetalles() != null) {
-        for (DetallePedidoEntity detalle : pedido.getDetalles()) {
-            detalle.setPedido(pedido);
 
-            // Calcular subtotal si no viene
-            if (detalle.getSubtotal() == null) {
-                BigDecimal subtotal = detalle.getPrecioUnitario().multiply(BigDecimal.valueOf(detalle.getCantidad()));
+        if (pedido.getDetalles() != null && !pedido.getDetalles().isEmpty()) {
+            BigDecimal totalPedido = BigDecimal.ZERO;
+
+            for (DetallePedidoEntity detalle : pedido.getDetalles()) {
+                detalle.setPedido(pedido);
+
+                // Aquí debes obtener la carta y el precio unitario
+                CartaDTO carta = cartaClient.getCartaPorId(detalle.getIdProducto());
+
+                BigDecimal precioUnitario = carta.getAverageSellPrice();
+
+                detalle.setPrecioUnitario(precioUnitario);
+
+                BigDecimal subtotal = precioUnitario.multiply(BigDecimal.valueOf(detalle.getCantidad()));
                 detalle.setSubtotal(subtotal);
-            }
-        }}
 
-        
-        
-        return pedidoRepository.save(pedido);
+                totalPedido = totalPedido.add(subtotal);
+            }
+
+            pedido.setTotal(totalPedido);
+        } else {
+            pedido.setTotal(BigDecimal.ZERO);
         }
+
+        return pedidoRepository.save(pedido);
+    }    
 
     @Override
     public PedidoEntity update(UUID id, PedidoEntity pedido) {
