@@ -6,7 +6,7 @@
   <parent>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-parent</artifactId>
-      <version>3.2.4</version>
+      <version>3.2.5</version>
       <relativePath/>
   </parent>
 
@@ -19,10 +19,12 @@
   <packaging>pom</packaging>
 
   <modules>
+  <module>ms-users</module>
   <module>ms-pokeapi</module>
   <module>ms-eureka</module>
   <module>ms-config</module>
   <module>ms-gateway</module>
+  <module>ms-pedido</module>
   </modules>
 
   <properties>

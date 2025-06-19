@@ -15,4 +15,6 @@ public interface IPokeCardService {
 
     List<PokeCardDTO> getCardsBySetDate(String date) throws IOException, InterruptedException;
 
+    PokeCardDTO getCartaById(String id) throws IOException, InterruptedException;
+    
 }

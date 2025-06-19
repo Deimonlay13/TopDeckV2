@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: ms-pedido
+  cloud:
+    compatibility:
+      enabled: false
+  config:
+    import: optional:configserver:http://localhost:8888
+
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@www.portalacademico.cl:49161/xe
+    username: apex_us_dsy_08_gdl
+    password: macarena
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: oracle
+    database-platform: org.hibernate.dialect.OracleDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090/realms/spring-boot-realm-dev
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+eureka:
+  instance:
+    hostname: localhost
+    leaseRenewalIntervalInSeconds: 10
+    leaseExpirationDurationInSeconds: 30
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
