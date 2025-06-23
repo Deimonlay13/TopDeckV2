@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.gdl.ms_pedido.dto.MedioDePagoDTO;
 import cl.gdl.ms_pedido.entity.MedioDePagoEntity;
 import cl.gdl.ms_pedido.service.IMedioDePagoService;
 
@@ -24,7 +25,7 @@ public class MedioDePagoController {
     IMedioDePagoService medioDePagoService;
     
     @PostMapping
-    public MedioDePagoEntity insert(@RequestBody MedioDePagoEntity medioDePago) {
+    public MedioDePagoDTO insert(@RequestBody MedioDePagoDTO medioDePago) {
         return medioDePagoService.insert(medioDePago);
     }
 
@@ -34,17 +35,17 @@ public class MedioDePagoController {
     }
 
     @DeleteMapping("/{id}")
-    public MedioDePagoEntity delete(@PathVariable UUID id) {
+    public MedioDePagoDTO delete(@PathVariable UUID id) {
         return medioDePagoService.delete(id);
     }
 
     @GetMapping("/{id}")
-    public MedioDePagoEntity getById(@PathVariable UUID id) {
+    public MedioDePagoDTO getById(@PathVariable UUID id) {
         return medioDePagoService.getById(id);
     }
 
     @GetMapping
-    public List<MedioDePagoEntity> getAll() {
+    public List<MedioDePagoDTO> getAll() {
         return medioDePagoService.getAll();
     }
 }

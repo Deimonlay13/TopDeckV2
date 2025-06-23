@@ -15,7 +15,7 @@ import lombok.Setter;
 
 public class MedioDePagoDTO {
 
-    private UUID idMedioDePago;
+    private UUID id;
 
     private String nameMedioDePago;
 

@@ -3,18 +3,18 @@ package cl.gdl.ms_pedido.service;
 import java.util.List;
 import java.util.UUID;
 
-
+import cl.gdl.ms_pedido.dto.MedioDePagoDTO;
 import cl.gdl.ms_pedido.entity.MedioDePagoEntity;
 
 public interface IMedioDePagoService {
 
-    MedioDePagoEntity insert(MedioDePagoEntity medioDePago);
+    MedioDePagoDTO insert(MedioDePagoDTO medioDePago);
 
     MedioDePagoEntity update(UUID id, MedioDePagoEntity medioDePago);
 
-    MedioDePagoEntity delete(UUID id);
+    MedioDePagoDTO delete(UUID id);
 
-    MedioDePagoEntity getById(UUID id);
+    MedioDePagoDTO getById(UUID id);
 
-    List<MedioDePagoEntity> getAll();
+    List<MedioDePagoDTO> getAll();
 }
