@@ -30,7 +30,7 @@ public class MedioDePagoController {
     }
 
     @PutMapping("/{id}")
-    public MedioDePagoEntity update(@PathVariable UUID id, @RequestBody MedioDePagoEntity medioDePago) {
+    public MedioDePagoDTO update(@PathVariable UUID id, @RequestBody MedioDePagoDTO medioDePago) {
         return medioDePagoService.update(id, medioDePago);
     }
 

@@ -17,7 +17,7 @@ public class MedioDePagoDTO {
 
     private UUID id;
 
-    private String nameMedioDePago;
+    private String nombre;
 
 
 }

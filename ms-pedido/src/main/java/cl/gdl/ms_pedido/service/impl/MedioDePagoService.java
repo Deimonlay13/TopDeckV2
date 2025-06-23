@@ -27,11 +27,11 @@ public class MedioDePagoService implements IMedioDePagoService{
 
     @Override
     public MedioDePagoDTO insert(MedioDePagoDTO dto) {
-        checkNombreNotExists(dto.getNameMedioDePago());
+        checkNombreNotExists(dto.getNombre());
 
         // Creamos entidad sin asignar ID manualmente
         MedioDePagoEntity entidad = new MedioDePagoEntity();
-        entidad.setNombre(dto.getNameMedioDePago());
+        entidad.setNombre(dto.getNombre());
 
         entidad = medioDePagoRepository.save(entidad); // aquí se genera el UUID
         log.info("Insertado MedioDePago con ID: {}", entidad.getId());
@@ -42,12 +42,12 @@ public class MedioDePagoService implements IMedioDePagoService{
     private MedioDePagoDTO toDto(MedioDePagoEntity entity) {
         MedioDePagoDTO dto = new MedioDePagoDTO();
         dto.setId(entity.getId());
-        dto.setNameMedioDePago(entity.getNombre());
+        dto.setNombre(entity.getNombre());
         return dto;
     }
 
     @Override
-    public MedioDePagoEntity update(UUID id, MedioDePagoEntity medioDePago) {
+    public MedioDePagoDTO update(UUID id, MedioDePagoDTO medioDePago) {
         MedioDePagoEntity existing = checkExists(id);
 
         checkNombreNotNullOrEmpty(medioDePago.getNombre());
@@ -58,8 +58,10 @@ public class MedioDePagoService implements IMedioDePagoService{
 
         existing.setNombre(medioDePago.getNombre());
 
-        return medioDePagoRepository.save(existing);
-    }
+        MedioDePagoEntity updated = medioDePagoRepository.save(existing);
+
+        return toDto(updated);
+    }    
 
     @Override
     public MedioDePagoDTO delete(UUID id) {
