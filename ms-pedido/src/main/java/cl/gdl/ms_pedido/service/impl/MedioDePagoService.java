@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class MedioDePagoService implements IMedioDePagoService{
+public class MedioDePagoService implements IMedioDePagoService {
 
     @Autowired
     IMedioDePagoRepository medioDePagoRepository;
@@ -29,12 +29,10 @@ public class MedioDePagoService implements IMedioDePagoService{
     public MedioDePagoDTO insert(MedioDePagoDTO dto) {
         checkNombreNotExists(dto.getNombre());
 
-        // Creamos entidad sin asignar ID manualmente
         MedioDePagoEntity entidad = new MedioDePagoEntity();
         entidad.setNombre(dto.getNombre());
 
-        entidad = medioDePagoRepository.save(entidad); // aquí se genera el UUID
-        log.info("Insertado MedioDePago con ID: {}", entidad.getId());
+        entidad = medioDePagoRepository.save(entidad);
 
         return toDto(entidad);
     }
@@ -61,35 +59,34 @@ public class MedioDePagoService implements IMedioDePagoService{
         MedioDePagoEntity updated = medioDePagoRepository.save(existing);
 
         return toDto(updated);
-    }    
+    }
 
     @Override
     public MedioDePagoDTO delete(UUID id) {
         MedioDePagoEntity existing = checkExists(id);
         medioDePagoRepository.deleteById(id);
         return toDto(existing);
-    }    
+    }
 
     @Override
     public MedioDePagoDTO getById(UUID id) {
         MedioDePagoEntity entity = checkExists(id);
         return toDto(entity);
-    }    
-
- @Override
-public List<MedioDePagoDTO> getAll() {
-    List<MedioDePagoEntity> entidades = new ArrayList<>();
-    medioDePagoRepository.findAll().forEach(entidades::add);
-
-    if (entidades.isEmpty()) {
-        throw new NoDataException();
     }
 
-    return entidades.stream()
-            .map(this::toDto)
-            .collect(Collectors.toList());
-}
+    @Override
+    public List<MedioDePagoDTO> getAll() {
+        List<MedioDePagoEntity> entidades = new ArrayList<>();
+        medioDePagoRepository.findAll().forEach(entidades::add);
 
+        if (entidades.isEmpty()) {
+            throw new NoDataException();
+        }
+
+        return entidades.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
 
     // Validaciones privadas
     private void checkNombreNotNullOrEmpty(String nombre) {
@@ -100,16 +97,14 @@ public List<MedioDePagoDTO> getAll() {
 
     private void checkNombreNotExists(String nombre) {
         medioDePagoRepository.findByNombreIgnoreCase(nombre)
-            .ifPresent(e -> {
-                throw new DuplicatedNameException(nombre);
-            });
+                .ifPresent(e -> {
+                    throw new DuplicatedNameException(nombre);
+                });
     }
 
     private MedioDePagoEntity checkExists(UUID id) {
         return medioDePagoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("El Medio De Pago con el ID: " + id + " no existe"));
-    }    
+    }
 
-
-    
 }

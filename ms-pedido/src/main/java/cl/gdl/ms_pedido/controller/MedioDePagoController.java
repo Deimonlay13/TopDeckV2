@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cl.gdl.ms_pedido.dto.MedioDePagoDTO;
-import cl.gdl.ms_pedido.entity.MedioDePagoEntity;
 import cl.gdl.ms_pedido.service.IMedioDePagoService;
 
 @RestController
