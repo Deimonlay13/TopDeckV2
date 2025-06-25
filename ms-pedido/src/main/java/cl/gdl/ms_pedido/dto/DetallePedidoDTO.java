@@ -16,8 +16,6 @@ public class DetallePedidoDTO {
 
     private UUID idDetalle;
 
-    private UUID idPedido;
-
     private String idProducto;   
 
     private int cantidad;

@@ -104,7 +104,7 @@ public PedidoDTO update(UUID id, PedidoDTO dto) {
             BigDecimal subtotal = precio.multiply(BigDecimal.valueOf(d.getCantidad()));
 
             DetallePedidoEntity detalle = new DetallePedidoEntity();
-            detalle.setIdProducto(d.getIdProducto());
+            detalle.setId(d.getIdDetalle());
             detalle.setCantidad(d.getCantidad());
             detalle.setPrecioUnitario(precio);
             detalle.setSubtotal(subtotal);

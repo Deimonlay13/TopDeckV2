@@ -14,6 +14,7 @@ public class PedidoMapper {
 
  public static PedidoDTO toDTO(PedidoEntity entity) {
         PedidoDTO dto = new PedidoDTO();
+
         dto.setIdPedido(entity.getId());
         dto.setIdUsuario(entity.getIdUsuario());
         dto.setIdMedioDePago(entity.getMedioDePago() != null ? entity.getMedioDePago().getId() : null);
@@ -48,6 +49,7 @@ public class PedidoMapper {
 
     private static DetallePedidoDTO toDTO(DetallePedidoEntity entity) {
         DetallePedidoDTO dto = new DetallePedidoDTO();
+        dto.setIdDetalle(entity.getId());
         dto.setIdProducto(entity.getIdProducto());
         dto.setCantidad(entity.getCantidad());
         dto.setPrecio_unitario(entity.getPrecioUnitario());
