@@ -12,25 +12,30 @@ import cl.gdl.ms_pedido.dto.EstadoPedidoDTO;
 import cl.gdl.ms_pedido.entity.EstadoPedidoEntity;
 import cl.gdl.ms_pedido.errors.DuplicatedNameException;
 import cl.gdl.ms_pedido.errors.NameNullException;
+import cl.gdl.ms_pedido.errors.NameNumberException;
 import cl.gdl.ms_pedido.errors.NoDataException;
 import cl.gdl.ms_pedido.errors.NotFoundException;
 import cl.gdl.ms_pedido.repository.IEstadoPedidoRepository;
 import cl.gdl.ms_pedido.service.IEstadoPedidoService;
 
 @Service
-public class EstadoPedidoServiceImpl  implements IEstadoPedidoService {
+public class EstadoPedidoServiceImpl implements IEstadoPedidoService {
+
     @Autowired
     IEstadoPedidoRepository estadoPedidoRepository;
 
     @Override
+
     public EstadoPedidoDTO insert(EstadoPedidoDTO dto) {
         checkNombreNotExists(dto.getNameEstadoPedido());
+        checkEstadoPedidoNameNotExists(dto.getNombre());
 
         // Creamos entidad sin asignar ID manualmente
         EstadoPedidoEntity entidad = new EstadoPedidoEntity();
         entidad.setNombre(dto.getNameEstadoPedido());
 
         entidad = estadoPedidoRepository.save(entidad); // aquí se genera el UUID
+
 
         return toDto(entidad);
     }
@@ -47,6 +52,7 @@ public EstadoPedidoDTO update(UUID id, EstadoPedidoDTO dto) {
         checkEstadoPedidoNameNotExists(dto.getNameEstadoPedido());
     }
 
+
     // Actualizar entidad con los datos del DTO
     existing.setNombre(dto.getNameEstadoPedido());
 
@@ -60,7 +66,7 @@ public EstadoPedidoDTO update(UUID id, EstadoPedidoDTO dto) {
         dto.setIdEstadoPedido(entity.getId());
         dto.setNameEstadoPedido(entity.getNombre());
         return dto;
-    }
+
 
      @Override
     public EstadoPedidoDTO delete(UUID id) {
@@ -89,23 +95,30 @@ public List<EstadoPedidoDTO> getAll() {
             .collect(Collectors.toList());
 }
 
-    private void checkNameEstadoPedidoNotNullOrEmpty(String nameEstadoPedido) {
-    if (nameEstadoPedido == null || nameEstadoPedido.trim().isEmpty()) {
-        throw new NameNullException("nameEstadoPedido");
+    // Validaciones privadas
+    private void checkNombreEstadoPedidoValido(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new NameNullException("nombre");
+        }
+
+        // Si contiene números o es solo números
+        if (nombre.matches("^\\d+$") || nombre.matches(".*\\d.*")) {
+            throw new NameNumberException("nombre");
+        }
     }
-}
 
     private EstadoPedidoEntity checkEstadoPedidoExists(UUID id) {
-    return estadoPedidoRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("El EstadoPedido con el ID: " + id + " no existe"));
+        return estadoPedidoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("El EstadoPedido con el ID: " + id + " no existe"));
     }
 
     private void checkEstadoPedidoNameNotExists(String nameEstadoPedido) {
         estadoPedidoRepository.findByNombreIgnoreCase(nameEstadoPedido)
-        .ifPresent(existingEstadoPedido -> {
-            throw new DuplicatedNameException(nameEstadoPedido);
-        });
+            .ifPresent(existingEstadoPedido -> {
+                throw new DuplicatedNameException(nameEstadoPedido);
+            });
     }
+
     private void checkNombreNotExists(String nombre) {
         estadoPedidoRepository.findByNombreIgnoreCase(nombre)
             .ifPresent(e -> {
@@ -113,3 +126,6 @@ public List<EstadoPedidoDTO> getAll() {
             });
     }
 }
+
+}
+
