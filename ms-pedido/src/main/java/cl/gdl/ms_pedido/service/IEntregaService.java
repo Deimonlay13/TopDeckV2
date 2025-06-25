@@ -3,19 +3,18 @@ package cl.gdl.ms_pedido.service;
 import java.util.List;
 import java.util.UUID;
 
-
-import cl.gdl.ms_pedido.entity.EntregaEntity;
+import cl.gdl.ms_pedido.dto.EntregaDTO;
 
 public interface IEntregaService {
 
-    EntregaEntity insert(EntregaEntity entrega);
+    EntregaDTO insert(EntregaDTO entrega);
 
-    EntregaEntity update(UUID id, EntregaEntity entrega);
+    EntregaDTO update(UUID id, EntregaDTO entrega);
 
-    EntregaEntity delete(UUID id);
+    EntregaDTO delete(UUID id);
 
-    EntregaEntity getById(UUID id);
+    EntregaDTO getById(UUID id);
 
-    List<EntregaEntity> getAll();
+    List<EntregaDTO> getAll();
 
 }

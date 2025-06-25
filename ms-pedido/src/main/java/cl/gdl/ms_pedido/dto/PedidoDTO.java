@@ -1,5 +1,9 @@
 package cl.gdl.ms_pedido.dto;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,8 +18,20 @@ import lombok.Setter;
 public class PedidoDTO {
 
     private UUID idPedido;
+    
+    private String idUsuario;
 
-    private Float total;
+    private UUID idMedioDePago;
+
+    private UUID idEntrega;
+
+    private UUID idEstadoPedido;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private BigDecimal total;
+    
+
+    private List<DetallePedidoDTO> detalles;
 
 
 }
