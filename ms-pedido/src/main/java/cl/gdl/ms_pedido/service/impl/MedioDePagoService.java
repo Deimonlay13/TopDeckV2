@@ -9,13 +9,14 @@ import org.springframework.stereotype.Service;
 import cl.gdl.ms_pedido.entity.MedioDePagoEntity;
 import cl.gdl.ms_pedido.errors.DuplicatedNameException;
 import cl.gdl.ms_pedido.errors.NameNullException;
+import cl.gdl.ms_pedido.errors.NameNumberException;
 import cl.gdl.ms_pedido.errors.NoDataException;
 import cl.gdl.ms_pedido.errors.NotFoundException;
 import cl.gdl.ms_pedido.repository.IMedioDePagoRepository;
 import cl.gdl.ms_pedido.service.IMedioDePagoService;
 
 @Service
-public class MedioDePagoService implements IMedioDePagoService{
+public class MedioDePagoService implements IMedioDePagoService {
 
     @Autowired
     IMedioDePagoRepository medioDePagoRepository;
@@ -23,6 +24,7 @@ public class MedioDePagoService implements IMedioDePagoService{
     @Override
     public MedioDePagoEntity insert(MedioDePagoEntity medioDePago) {
         checkNombreNotNullOrEmpty(medioDePago.getNombre());
+        checkNombreSinNumeros(medioDePago.getNombre());
         checkNombreNotExists(medioDePago.getNombre());
 
         return medioDePagoRepository.save(medioDePago);
@@ -33,6 +35,7 @@ public class MedioDePagoService implements IMedioDePagoService{
         MedioDePagoEntity existing = checkExists(id);
 
         checkNombreNotNullOrEmpty(medioDePago.getNombre());
+        checkNombreSinNumeros(medioDePago.getNombre());
 
         if (!existing.getNombre().equalsIgnoreCase(medioDePago.getNombre())) {
             checkNombreNotExists(medioDePago.getNombre());
@@ -46,9 +49,7 @@ public class MedioDePagoService implements IMedioDePagoService{
     @Override
     public MedioDePagoEntity delete(UUID id) {
         MedioDePagoEntity existing = checkExists(id);
-
         medioDePagoRepository.deleteById(id);
-
         return existing;
     }
 
@@ -70,6 +71,17 @@ public class MedioDePagoService implements IMedioDePagoService{
     private void checkNombreNotNullOrEmpty(String nombre) {
         if (nombre == null || nombre.trim().isEmpty()) {
             throw new NameNullException("nombre");
+        }
+    }
+
+    private void checkNombreSinNumeros(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new NameNullException("nombre");
+        }
+
+        // Si es completamente numérico o contiene números
+        if (nombre.matches("^\\d+$") || nombre.matches(".*\\d.*")) {
+            throw new NameNumberException("nombre");
         }
     }
 

@@ -9,78 +9,88 @@ import org.springframework.stereotype.Service;
 import cl.gdl.ms_pedido.entity.EntregaEntity;
 import cl.gdl.ms_pedido.errors.DuplicatedNameException;
 import cl.gdl.ms_pedido.errors.NameNullException;
+import cl.gdl.ms_pedido.errors.NameNumberException;
 import cl.gdl.ms_pedido.errors.NoDataException;
 import cl.gdl.ms_pedido.errors.NotFoundException;
 import cl.gdl.ms_pedido.repository.IEntregaRepository;
 import cl.gdl.ms_pedido.service.IEntregaService;
 
 @Service
-public class EntregaServiceImpl implements IEntregaService{
+public class EntregaServiceImpl implements IEntregaService {
+
     @Autowired
     private IEntregaRepository entregaRepository;
 
     @Override
-public EntregaEntity insert(EntregaEntity entrega) {
+    public EntregaEntity insert(EntregaEntity entrega) {
         checkDescripcionNotNullOrEmpty(entrega.getDescripcion());
+        checkDescripcionSinNumeros(entrega.getDescripcion());
         checkDescripcionNotExists(entrega.getDescripcion());
 
-    return entregaRepository.save(entrega);
-}
-
-    @Override
-public EntregaEntity update(UUID id, EntregaEntity entrega) {
-    EntregaEntity existing = checkEntregaExists(id);  // valida que exista
-
-    checkDescripcionNotNullOrEmpty(entrega.getDescripcion());
-
-    // Si el nuevo nombre es distinto al actual, verificamos que no exista ya otro igual
-    if (!existing.getDescripcion().equalsIgnoreCase(entrega.getDescripcion())) {
-        checkDescripcionNotExists(entrega.getDescripcion());
+        return entregaRepository.save(entrega);
     }
 
-    existing.setDescripcion(entrega.getDescripcion());
+    @Override
+    public EntregaEntity update(UUID id, EntregaEntity entrega) {
+        EntregaEntity existing = checkEntregaExists(id);
 
-    return entregaRepository.save(existing);
-}
+        checkDescripcionNotNullOrEmpty(entrega.getDescripcion());
+        checkDescripcionSinNumeros(entrega.getDescripcion());
+
+        if (!existing.getDescripcion().equalsIgnoreCase(entrega.getDescripcion())) {
+            checkDescripcionNotExists(entrega.getDescripcion());
+        }
+
+        existing.setDescripcion(entrega.getDescripcion());
+
+        return entregaRepository.save(existing);
+    }
 
     @Override
     public EntregaEntity delete(UUID id) {
-    EntregaEntity existing = checkEntregaExists(id); // Validamos que exista
-
-    entregaRepository.deleteById(id); // Borramos por id
-
-    return existing; // Retornamos la entidad que borramos
+        EntregaEntity existing = checkEntregaExists(id);
+        entregaRepository.deleteById(id);
+        return existing;
     }
 
     @Override
     public EntregaEntity getById(UUID id) {
-    return checkEntregaExists(id); // Si no existe, lanza excepción
+        return checkEntregaExists(id);
     }
 
     @Override
     public List<EntregaEntity> getAll() {
-    List<EntregaEntity> entregas = (List<EntregaEntity>) entregaRepository.findAll();
-    if (entregas.isEmpty()) {
-        throw new NoDataException();
+        List<EntregaEntity> entregas = (List<EntregaEntity>) entregaRepository.findAll();
+        if (entregas.isEmpty()) {
+            throw new NoDataException();
+        }
+        return entregas;
     }
-    return entregas;
-}
 
+    // Validaciones privadas
     private void checkDescripcionNotNullOrEmpty(String descripcion) {
-    if (descripcion == null || descripcion.trim().isEmpty()) {
-        throw new NameNullException("descripcion");
+        if (descripcion == null || descripcion.trim().isEmpty()) {
+            throw new NameNullException("descripcion");
+        }
     }
+
+    private void checkDescripcionSinNumeros(String descripcion) {
+        if (descripcion.matches("^\\d+$") || descripcion.matches(".*\\d.*")) {
+            throw new NameNumberException("descripcion");
+        }
+    }
+
+    private void checkDescripcionNotExists(String descripcion) {
+        entregaRepository.findByDescripcionIgnoreCase(descripcion)
+            .ifPresent(e -> {
+                throw new DuplicatedNameException(descripcion);
+            });
     }
 
     private EntregaEntity checkEntregaExists(UUID id) {
-    return entregaRepository.findById(id)
-        .orElseThrow(() -> new NotFoundException("La Entrega con el ID: " + id + " no existe"));
-    }
-
-private void checkDescripcionNotExists(String descripcion) {
-    entregaRepository.findByDescripcionIgnoreCase(descripcion)
-        .ifPresent(e -> {
-            throw new DuplicatedNameException(descripcion);
-        });
+        return entregaRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("La Entrega con el ID: " + id + " no existe"));
     }
 }
+
+
