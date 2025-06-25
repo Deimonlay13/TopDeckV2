@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cl.gdl.ms_pedido.dto.EntregaDTO;
 import cl.gdl.ms_pedido.entity.EntregaEntity;
 import cl.gdl.ms_pedido.errors.DuplicatedNameException;
 import cl.gdl.ms_pedido.errors.NameNullException;
@@ -17,54 +18,63 @@ import cl.gdl.ms_pedido.service.IEntregaService;
 
 @Service
 public class EntregaServiceImpl implements IEntregaService {
-
     @Autowired
     private IEntregaRepository entregaRepository;
 
     @Override
-    public EntregaEntity insert(EntregaEntity entrega) {
-        checkDescripcionNotNullOrEmpty(entrega.getDescripcion());
-        checkDescripcionSinNumeros(entrega.getDescripcion());
-        checkDescripcionNotExists(entrega.getDescripcion());
+    public EntregaDTO insert(EntregaDTO dto) {
+        checkDescripcionNotNullOrEmpty(dto.getEntrega());
+        checkDescripcionNotExists(dto.getEntrega());
+        checkDescripcionNotExists(dto.getEntrega());
 
-        return entregaRepository.save(entrega);
+        EntregaEntity entidad = new EntregaEntity();
+        entidad.setDescripcion(dto.getEntrega());
+
+        entidad = entregaRepository.save(entidad);
+        return toDto(entidad);
     }
 
     @Override
-    public EntregaEntity update(UUID id, EntregaEntity entrega) {
+    public EntregaDTO update(UUID id, EntregaDTO entrega) {
         EntregaEntity existing = checkEntregaExists(id);
 
-        checkDescripcionNotNullOrEmpty(entrega.getDescripcion());
-        checkDescripcionSinNumeros(entrega.getDescripcion());
+        checkDescripcionNotNullOrEmpty(entrega.getEntrega());
 
-        if (!existing.getDescripcion().equalsIgnoreCase(entrega.getDescripcion())) {
-            checkDescripcionNotExists(entrega.getDescripcion());
+        // Invertimos para evitar NullPointerException
+        if (!entrega.getEntrega().equalsIgnoreCase(existing.getDescripcion())) {
+            checkDescripcionNotExists(entrega.getEntrega());
         }
 
-        existing.setDescripcion(entrega.getDescripcion());
+        existing.setDescripcion(entrega.getEntrega());
 
-        return entregaRepository.save(existing);
+        EntregaEntity updated = entregaRepository.save(existing);
+        return toDto(updated);
     }
 
     @Override
-    public EntregaEntity delete(UUID id) {
-        EntregaEntity existing = checkEntregaExists(id);
-        entregaRepository.deleteById(id);
-        return existing;
+    public EntregaDTO delete(UUID id) {
+        EntregaEntity existing = checkEntregaExists(id); // Validamos que exista
+
+        entregaRepository.deleteById(id); // Borramos por id
+
+        return toDto(existing); // Retornamos la entidad que borramos
     }
 
     @Override
-    public EntregaEntity getById(UUID id) {
-        return checkEntregaExists(id);
+    public EntregaDTO getById(UUID id) {
+        EntregaEntity entrega = checkEntregaExists(id);
+        return toDto(entrega); // Si no existe, lanza excepción
     }
 
     @Override
-    public List<EntregaEntity> getAll() {
+    public List<EntregaDTO> getAll() {
         List<EntregaEntity> entregas = (List<EntregaEntity>) entregaRepository.findAll();
         if (entregas.isEmpty()) {
             throw new NoDataException();
         }
-        return entregas;
+        return entregas.stream()
+                .map(this::toDto)
+                .toList();
     }
 
     // Validaciones privadas
@@ -74,22 +84,23 @@ public class EntregaServiceImpl implements IEntregaService {
         }
     }
 
-    private void checkDescripcionSinNumeros(String descripcion) {
-        if (descripcion.matches("^\\d+$") || descripcion.matches(".*\\d.*")) {
-            throw new NameNumberException("descripcion");
-        }
+    private EntregaEntity checkEntregaExists(UUID id) {
+        return entregaRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("La Entrega con el ID: " + id + " no existe"));
     }
 
     private void checkDescripcionNotExists(String descripcion) {
         entregaRepository.findByDescripcionIgnoreCase(descripcion)
-            .ifPresent(e -> {
-                throw new DuplicatedNameException(descripcion);
-            });
+                .ifPresent(e -> {
+                    throw new DuplicatedNameException(descripcion);
+                });
     }
 
-    private EntregaEntity checkEntregaExists(UUID id) {
-        return entregaRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("La Entrega con el ID: " + id + " no existe"));
+    private EntregaDTO toDto(EntregaEntity entity) {
+        EntregaDTO dto = new EntregaDTO();
+        dto.setIdEntrega(entity.getId());
+        dto.setEntrega(entity.getDescripcion());
+        return dto;
     }
 }
 
