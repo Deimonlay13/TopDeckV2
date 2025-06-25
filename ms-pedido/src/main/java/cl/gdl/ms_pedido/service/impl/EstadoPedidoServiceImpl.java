@@ -29,7 +29,7 @@ public class EstadoPedidoServiceImpl implements IEstadoPedidoService {
     public EstadoPedidoDTO insert(EstadoPedidoDTO dto) {
         checkNombreNotExists(dto.getNameEstadoPedido());
         checkEstadoPedidoNameNotExists(dto.getNameEstadoPedido());
-
+        checkNombreEstadoPedidoValido(dto.getNameEstadoPedido());
         // Creamos entidad sin asignar ID manualmente
         EstadoPedidoEntity entidad = new EstadoPedidoEntity();
         entidad.setNombre(dto.getNameEstadoPedido());
