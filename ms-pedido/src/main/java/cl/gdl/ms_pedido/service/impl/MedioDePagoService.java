@@ -12,6 +12,7 @@ import cl.gdl.ms_pedido.dto.MedioDePagoDTO;
 import cl.gdl.ms_pedido.entity.MedioDePagoEntity;
 import cl.gdl.ms_pedido.errors.DuplicatedNameException;
 import cl.gdl.ms_pedido.errors.NameNullException;
+import cl.gdl.ms_pedido.errors.NameNumberException;
 import cl.gdl.ms_pedido.errors.NoDataException;
 import cl.gdl.ms_pedido.errors.NotFoundException;
 import cl.gdl.ms_pedido.repository.IMedioDePagoRepository;
@@ -26,7 +27,10 @@ public class MedioDePagoService implements IMedioDePagoService {
     IMedioDePagoRepository medioDePagoRepository;
 
     @Override
+
     public MedioDePagoDTO insert(MedioDePagoDTO dto) {
+        checkNombreNotNullOrEmpty(dto.getNombre());
+        checkNombreSinNumeros(dto.getNombre());
         checkNombreNotExists(dto.getNombre());
 
         MedioDePagoEntity entidad = new MedioDePagoEntity();
@@ -49,6 +53,7 @@ public class MedioDePagoService implements IMedioDePagoService {
         MedioDePagoEntity existing = checkExists(id);
 
         checkNombreNotNullOrEmpty(medioDePago.getNombre());
+        checkNombreSinNumeros(medioDePago.getNombre());
 
         if (!existing.getNombre().equalsIgnoreCase(medioDePago.getNombre())) {
             checkNombreNotExists(medioDePago.getNombre());
@@ -92,6 +97,17 @@ public class MedioDePagoService implements IMedioDePagoService {
     private void checkNombreNotNullOrEmpty(String nombre) {
         if (nombre == null || nombre.trim().isEmpty()) {
             throw new NameNullException("nombre");
+        }
+    }
+
+    private void checkNombreSinNumeros(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new NameNullException("nombre");
+        }
+
+        // Si es completamente numérico o contiene números
+        if (nombre.matches("^\\d+$") || nombre.matches(".*\\d.*")) {
+            throw new NameNumberException("nombre");
         }
     }
 

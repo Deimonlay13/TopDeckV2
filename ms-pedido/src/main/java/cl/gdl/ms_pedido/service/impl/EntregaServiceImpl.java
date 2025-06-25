@@ -10,6 +10,7 @@ import cl.gdl.ms_pedido.dto.EntregaDTO;
 import cl.gdl.ms_pedido.entity.EntregaEntity;
 import cl.gdl.ms_pedido.errors.DuplicatedNameException;
 import cl.gdl.ms_pedido.errors.NameNullException;
+import cl.gdl.ms_pedido.errors.NameNumberException;
 import cl.gdl.ms_pedido.errors.NoDataException;
 import cl.gdl.ms_pedido.errors.NotFoundException;
 import cl.gdl.ms_pedido.repository.IEntregaRepository;
@@ -23,6 +24,7 @@ public class EntregaServiceImpl implements IEntregaService {
     @Override
     public EntregaDTO insert(EntregaDTO dto) {
         checkDescripcionNotNullOrEmpty(dto.getEntrega());
+        checkDescripcionNotExists(dto.getEntrega());
         checkDescripcionNotExists(dto.getEntrega());
 
         EntregaEntity entidad = new EntregaEntity();
@@ -75,6 +77,7 @@ public class EntregaServiceImpl implements IEntregaService {
                 .toList();
     }
 
+    // Validaciones privadas
     private void checkDescripcionNotNullOrEmpty(String descripcion) {
         if (descripcion == null || descripcion.trim().isEmpty()) {
             throw new NameNullException("descripcion");
@@ -100,3 +103,5 @@ public class EntregaServiceImpl implements IEntregaService {
         return dto;
     }
 }
+
+

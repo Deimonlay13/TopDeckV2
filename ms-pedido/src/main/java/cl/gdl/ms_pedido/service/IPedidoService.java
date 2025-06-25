@@ -4,19 +4,19 @@ import java.util.List;
 import java.util.UUID;
 
 import cl.gdl.ms_pedido.dto.PedidoConUsuarioDTO;
-import cl.gdl.ms_pedido.entity.PedidoEntity;
+import cl.gdl.ms_pedido.dto.PedidoDTO;
 
 public interface IPedidoService {
 
-    PedidoEntity insert(PedidoEntity pedido);
+    PedidoDTO insert(PedidoDTO pedido);
 
-    PedidoEntity update(UUID id, PedidoEntity pedido);
+    PedidoDTO update(UUID id, PedidoDTO pedido);
 
-    PedidoEntity delete(UUID id);
+    PedidoDTO delete(UUID id);
 
-    PedidoEntity getById(UUID id);
+    PedidoDTO getById(UUID id);
 
-    List<PedidoEntity> getAll();
+    List<PedidoDTO> getAll();
 
     PedidoConUsuarioDTO getPedidoConUsuario(UUID idPedido);
 
