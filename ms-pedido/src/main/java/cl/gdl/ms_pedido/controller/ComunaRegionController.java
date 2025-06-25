@@ -17,7 +17,7 @@ public class ComunaRegionController {
     @Autowired
     private IComunaRegionService comunaRegionService;
 
-    @GetMapping("/region/{id}")
+    @GetMapping("/regiones/{id}")
     public RegionDTO getById(@PathVariable String id) {
         return comunaRegionService.getRegionById(id);
     }

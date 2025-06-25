@@ -1,11 +1,14 @@
 package cl.gdl.ms_pedido.service.impl;
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import cl.gdl.ms_pedido.dto.ComunaDTO;
 import cl.gdl.ms_pedido.dto.RegionDTO;
+import cl.gdl.ms_pedido.service.IComunaRegionService;
 
-public class ComunaRegionServiceImpl {
+@Service
+public class ComunaRegionServiceImpl implements IComunaRegionService{
 
 private final RestTemplate restTemplate = new RestTemplate();
     private final String BASE_URL = "https://apis.digital.gob.cl/dpa";

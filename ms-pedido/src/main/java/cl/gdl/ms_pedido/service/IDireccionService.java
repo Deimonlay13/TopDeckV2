@@ -1,20 +1,19 @@
 package cl.gdl.ms_pedido.service;
 
-import cl.gdl.ms_pedido.entity.DireccionEntity;
-
 import java.util.List;
 import java.util.UUID;
+import cl.gdl.ms_pedido.dto.DireccionDTO;
 
 public interface IDireccionService {
 
-    DireccionEntity insert(DireccionEntity direccion);
+    DireccionDTO insert(DireccionDTO direccion);
 
-    DireccionEntity update(UUID id, DireccionEntity direccion);
+    DireccionDTO update(UUID id, DireccionDTO direccion);
 
-    DireccionEntity delete(UUID id);
+    DireccionDTO delete(UUID id);
 
-    DireccionEntity getById(UUID id);
+    DireccionDTO getById(UUID id);
 
-    List<DireccionEntity> getAll();
+    List<DireccionDTO> getAll();
 }
 

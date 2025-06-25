@@ -1,17 +1,14 @@
 package cl.gdl.ms_pedido.service.impl;
 
 import cl.gdl.ms_pedido.entity.DireccionEntity;
-import cl.gdl.ms_pedido.errors.DuplicatedNameException;
-import cl.gdl.ms_pedido.errors.NameNullException;
-import cl.gdl.ms_pedido.errors.NoDataException;
-import cl.gdl.ms_pedido.errors.NotFoundException;
 import cl.gdl.ms_pedido.repository.IDireccionRepository;
 import cl.gdl.ms_pedido.service.IDireccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
+
+import cl.gdl.ms_pedido.dto.DireccionDTO;
 
 @Service
 public class DireccionServiceImpl implements IDireccionService {
@@ -20,70 +17,79 @@ public class DireccionServiceImpl implements IDireccionService {
     private IDireccionRepository direccionRepository;
 
     @Override
-    public DireccionEntity insert(DireccionEntity direccion) {
-        checkDireccionNotNullOrEmpty(direccion.getDireccion());
-        checkDireccionNotExists(direccion.getDireccion());
-        return direccionRepository.save(direccion);
+    public DireccionDTO insert(DireccionDTO dto) {
+        DireccionEntity entity = new DireccionEntity();
+        entity.setIdPersona(dto.getIdPersona());
+        entity.setIdComuna(dto.getIdComuna());
+        entity.setIdRegion(dto.getIdRegion());
+        entity.setDireccion(dto.getDireccion());
+        entity.setTelefono(dto.getTelefono());
+        entity = direccionRepository.save(entity);
+        return toDto(entity);
     }
 
     @Override
-    public DireccionEntity update(UUID id, DireccionEntity direccion) {
-        DireccionEntity existente = checkDireccionExists(id);
+    public DireccionDTO update(UUID id, DireccionDTO dto) {
+        DireccionEntity entity = direccionRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Dirección con ID " + id + " no encontrada"));
 
-        checkDireccionNotNullOrEmpty(direccion.getDireccion());
+        // Actualizamos solo los campos modificables
+        entity.setIdPersona(dto.getIdPersona());
+        entity.setIdComuna(dto.getIdComuna());
+        entity.setIdRegion(dto.getIdRegion());
+        entity.setDireccion(dto.getDireccion());
+        entity.setTelefono(dto.getTelefono());
 
-        if (!existente.getDireccion().equalsIgnoreCase(direccion.getDireccion())) {
-            checkDireccionNotExists(direccion.getDireccion());
-        }
-
-        existente.setIdPersona(direccion.getIdPersona());
-        existente.setIdComuna(direccion.getIdComuna());
-        existente.setDireccion(direccion.getDireccion());
-        existente.setTelefono(direccion.getTelefono());
-
-        return direccionRepository.save(existente);
+        DireccionEntity updated = direccionRepository.save(entity);
+        return toDto(updated);
     }
 
     @Override
-    public DireccionEntity delete(UUID id) {
-        DireccionEntity existente = checkDireccionExists(id);
+    public DireccionDTO delete(UUID id) {
+        DireccionEntity entity = direccionRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Dirección con ID " + id + " no encontrada para eliminar"));
+
         direccionRepository.deleteById(id);
-        return existente;
+        return toDto(entity);
     }
 
     @Override
-    public DireccionEntity getById(UUID id) {
-        return checkDireccionExists(id);
+    public DireccionDTO getById(UUID id) {
+        DireccionEntity entity = direccionRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Dirección con ID " + id + " no encontrada"));
+        return toDto(entity);
     }
 
     @Override
-    public List<DireccionEntity> getAll() {
-        List<DireccionEntity> direcciones = (List<DireccionEntity>) direccionRepository.findAll();
-        if (direcciones.isEmpty()) {
-            throw new NoDataException();
-        }
-        return direcciones;
+    public List<DireccionDTO> getAll() {
+        List<DireccionEntity> entidades = (List<DireccionEntity>) direccionRepository.findAll();
+        return entidades.stream().map(this::toDto).toList();
     }
 
-    // ---------------------- Validaciones privadas ------------------------
-
-    private void checkDireccionNotNullOrEmpty(String direccion) {
-        if (direccion == null || direccion.trim().isEmpty()) {
-            throw new NameNullException("direccion");
-        }
+    // Métodos de mapeo: DTO ↔ Entity (puedes moverlos a una clase util o mapper después)
+    private DireccionDTO toDto(DireccionEntity entity) {
+        DireccionDTO dto = new DireccionDTO();
+        dto.setIdDireccion(entity.getIdDireccion());
+        dto.setIdPersona(entity.getIdPersona());
+        dto.setIdComuna(entity.getIdComuna());
+        dto.setIdRegion(entity.getIdRegion());
+        dto.setDireccion(entity.getDireccion());
+        dto.setTelefono(entity.getTelefono());
+        return dto;
     }
 
-    private DireccionEntity checkDireccionExists(UUID id) {
-        return direccionRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("La dirección con ID: " + id + " no existe"));
-    }
-
-    private void checkDireccionNotExists(String direccion) {
-        direccionRepository.findByDireccionIgnoreCase(direccion)
-                .ifPresent(d -> {
-                    throw new DuplicatedNameException(direccion);
-                });
+    private DireccionEntity toEntity(DireccionDTO dto) {
+        DireccionEntity entity = new DireccionEntity();
+        entity.setIdDireccion(dto.getIdDireccion());
+        entity.setIdPersona(dto.getIdPersona());
+        entity.setIdComuna(dto.getIdComuna());
+        entity.setIdRegion(dto.getIdRegion());
+        entity.setDireccion(dto.getDireccion());
+        entity.setTelefono(dto.getTelefono());
+        return entity;
     }
 }
+
+
 
 
