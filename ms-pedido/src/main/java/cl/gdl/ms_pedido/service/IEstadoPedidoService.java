@@ -3,18 +3,18 @@ package cl.gdl.ms_pedido.service;
 import java.util.List;
 import java.util.UUID;
 
+import cl.gdl.ms_pedido.dto.EstadoPedidoDTO;
 
-import cl.gdl.ms_pedido.entity.EstadoPedidoEntity;
 
 public interface IEstadoPedidoService {
 
-    EstadoPedidoEntity insert(EstadoPedidoEntity estadoPedido);
+    EstadoPedidoDTO insert(EstadoPedidoDTO estadoPedido);
 
-    EstadoPedidoEntity update(UUID id, EstadoPedidoEntity estadoPedido);
+    EstadoPedidoDTO update(UUID id, EstadoPedidoDTO estadoPedido);
 
-    EstadoPedidoEntity delete(UUID id);
+    EstadoPedidoDTO delete(UUID id);
 
-    EstadoPedidoEntity getById(UUID id);
+    EstadoPedidoDTO getById(UUID id);
 
-    List<EstadoPedidoEntity> getAll();
+    List<EstadoPedidoDTO> getAll();
 }

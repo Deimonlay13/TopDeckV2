@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
-import cl.gdl.ms_pedido.entity.EstadoPedidoEntity;
+import cl.gdl.ms_pedido.dto.EstadoPedidoDTO;
 import cl.gdl.ms_pedido.service.IEstadoPedidoService;
 
 
@@ -25,27 +24,27 @@ public class EstadoPedidoController {
     private IEstadoPedidoService estadoPedidoService;
 
     @PostMapping("/insert")
-    public EstadoPedidoEntity insert(@RequestBody EstadoPedidoEntity estadoPedido) {
+    public EstadoPedidoDTO insert(@RequestBody EstadoPedidoDTO estadoPedido) {
         return estadoPedidoService.insert(estadoPedido);
     }
 
     @PutMapping("/update/{id}")
-    public EstadoPedidoEntity update(@PathVariable UUID id, @RequestBody EstadoPedidoEntity estadoPedido) {
+    public EstadoPedidoDTO update(@PathVariable UUID id, @RequestBody EstadoPedidoDTO estadoPedido) {
         return estadoPedidoService.update(id, estadoPedido);
     }
 
     @DeleteMapping("/delete/{id}")
-    public EstadoPedidoEntity delete(@PathVariable UUID id) {
+    public EstadoPedidoDTO delete(@PathVariable UUID id) {
         return estadoPedidoService.delete(id);
     }
 
     @GetMapping("/getById/{id}")
-    public EstadoPedidoEntity getById(@PathVariable UUID id) {
+    public EstadoPedidoDTO getById(@PathVariable UUID id) {
         return estadoPedidoService.getById(id);
     }
 
     @GetMapping
-    public List<EstadoPedidoEntity> getAll() {
+    public List<EstadoPedidoDTO> getAll() {
         return estadoPedidoService.getAll();
     }
 }
