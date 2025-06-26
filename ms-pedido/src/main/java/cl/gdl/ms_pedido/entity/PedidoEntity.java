@@ -43,6 +43,10 @@ public class PedidoEntity {
     private MedioDePagoEntity medioDePago;
 
     @ManyToOne
+    @JoinColumn(name = "id_direccion")
+    private DireccionEntity direccion;
+
+    @ManyToOne
     @JoinColumn(name = "id_entrega")
     private EntregaEntity entrega;
 

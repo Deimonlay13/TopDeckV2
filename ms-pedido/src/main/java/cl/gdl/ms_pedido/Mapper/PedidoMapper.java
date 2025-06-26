@@ -3,29 +3,65 @@ package cl.gdl.ms_pedido.Mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-
 import cl.gdl.ms_pedido.dto.DetallePedidoDTO;
+import cl.gdl.ms_pedido.dto.DireccionDTO;
+import cl.gdl.ms_pedido.dto.EntregaDTO;
+import cl.gdl.ms_pedido.dto.EstadoPedidoDTO;
+import cl.gdl.ms_pedido.dto.MedioDePagoDTO;
 import cl.gdl.ms_pedido.dto.PedidoDTO;
 import cl.gdl.ms_pedido.entity.DetallePedidoEntity;
 import cl.gdl.ms_pedido.entity.PedidoEntity;
 
 public class PedidoMapper {
 
- public static PedidoDTO toDTO(PedidoEntity entity) {
+    public static PedidoDTO toDTO(PedidoEntity entity) {
         PedidoDTO dto = new PedidoDTO();
 
         dto.setIdPedido(entity.getId());
         dto.setIdUsuario(entity.getIdUsuario());
-        dto.setIdMedioDePago(entity.getMedioDePago() != null ? entity.getMedioDePago().getId() : null);
-        dto.setIdEntrega(entity.getEntrega() != null ? entity.getEntrega().getId() : null);
-        dto.setIdEstadoPedido(entity.getEstadoPedido() != null ? entity.getEstadoPedido().getId() : null);
+
+        // Medio de pago
+        if (entity.getMedioDePago() != null) {
+            MedioDePagoDTO medioDto = new MedioDePagoDTO();
+            medioDto.setId(entity.getMedioDePago().getId());
+            medioDto.setNombre(entity.getMedioDePago().getNombre());
+            dto.setIdMedioDePago(medioDto);
+        }
+
+        // Entrega
+        if (entity.getEntrega() != null) {
+            EntregaDTO entregaDto = new EntregaDTO();
+            entregaDto.setIdEntrega(entity.getEntrega().getId());
+            entregaDto.setEntrega(entity.getEntrega().getDescripcion());
+            dto.setIdEntrega(entregaDto);
+        }
+
+        // Estado pedido
+        if (entity.getEstadoPedido() != null) {
+            EstadoPedidoDTO estadoDto = new EstadoPedidoDTO();
+            estadoDto.setIdEstadoPedido(entity.getEstadoPedido().getId());
+            estadoDto.setNameEstadoPedido(entity.getEstadoPedido().getNombre());
+            dto.setIdEstadoPedido(estadoDto);
+        }
+
+        // Dirección
+        if (entity.getDireccion() != null) {
+            DireccionDTO direccionDTO = new DireccionDTO();
+            direccionDTO.setIdDireccion(entity.getDireccion().getIdDireccion());
+            direccionDTO.setIdComuna(entity.getDireccion().getIdComuna());
+            direccionDTO.setIdRegion(entity.getDireccion().getIdRegion());
+            direccionDTO.setDireccion(entity.getDireccion().getDireccion());
+            direccionDTO.setTelefono(entity.getDireccion().getTelefono());
+            dto.setDireccion(direccionDTO);
+        }
+
+
         dto.setTotal(entity.getTotal());
 
         if (entity.getDetalles() != null) {
             List<DetallePedidoDTO> detalles = entity.getDetalles().stream()
-                .map(PedidoMapper::toDTO)
-                .collect(Collectors.toList());
+                    .map(PedidoMapper::toDTO)
+                    .collect(Collectors.toList());
             dto.setDetalles(detalles);
         }
 
@@ -35,12 +71,12 @@ public class PedidoMapper {
     public static PedidoEntity toEntity(PedidoDTO dto) {
         PedidoEntity entity = new PedidoEntity();
         entity.setIdUsuario(dto.getIdUsuario());
-        // Los demás campos (medios de pago, entrega, estado) se deben setear externamente en el service
+        // Los demás campos se setean en el service
 
         if (dto.getDetalles() != null) {
             List<DetallePedidoEntity> detalles = dto.getDetalles().stream()
-                .map(PedidoMapper::toEntity)
-                .collect(Collectors.toList());
+                    .map(PedidoMapper::toEntity)
+                    .collect(Collectors.toList());
             entity.setDetalles(detalles);
         }
 
@@ -61,7 +97,8 @@ public class PedidoMapper {
         DetallePedidoEntity entity = new DetallePedidoEntity();
         entity.setIdProducto(dto.getIdProducto());
         entity.setCantidad(dto.getCantidad());
-        // El precio y subtotal se deben calcular externamente en el service
+        // El precio y subtotal se calculan en el service
         return entity;
     }
 }
+
