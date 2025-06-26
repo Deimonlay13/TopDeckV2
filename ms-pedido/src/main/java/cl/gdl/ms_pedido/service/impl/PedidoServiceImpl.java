@@ -99,17 +99,8 @@ public class PedidoServiceImpl implements IPedidoService {
 
     existing.setIdUsuario(dto.getIdUsuario());
     existing.setMedioDePago(buscarMedioDePago(dto.getIdMedioDePago().getId()));
-    existing.setEntrega(buscarEntrega(dto.getIdEntrega().getId()));
-    existing.setEstadoPedido(buscarEstadoPedido(dto.getIdEstadoPedido().getId()));
-
-
-if (dto.getIdDireccion() != null) {
-    DireccionEntity direccion = direccionRepository.findById(dto.getIdDireccion())
-        .orElseThrow(() -> new NotFoundException("Dirección no encontrada"));
-    pedido.setDireccion(direccion);
-} else {
-    throw new NotFoundException("Debe proporcionar una dirección válida");
-}
+    existing.setEntrega(buscarEntrega(dto.getIdEntrega().getIdEntrega()));
+    existing.setEstadoPedido(buscarEstadoPedido(dto.getIdEstadoPedido().getIdEstadoPedido()));
 
 
     AtomicReference<BigDecimal> total = new AtomicReference<>(BigDecimal.ZERO);
