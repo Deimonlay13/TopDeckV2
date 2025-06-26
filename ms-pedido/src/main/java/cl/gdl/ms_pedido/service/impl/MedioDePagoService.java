@@ -26,6 +26,10 @@ public class MedioDePagoService implements IMedioDePagoService {
     @Autowired
     IMedioDePagoRepository medioDePagoRepository;
 
+    public MedioDePagoService(IMedioDePagoRepository medioDePagoRepository) {
+        this.medioDePagoRepository = medioDePagoRepository;
+    }
+
     @Override
 
     public MedioDePagoDTO insert(MedioDePagoDTO dto) {
