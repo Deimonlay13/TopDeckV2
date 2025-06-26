@@ -2,6 +2,8 @@ package cl.gdl.ms_pedido.dto;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EstadoPedidoDTO {
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UUID idEstadoPedido;
     
     private String nameEstadoPedido;

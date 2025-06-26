@@ -18,12 +18,14 @@ import cl.gdl.ms_pedido.dto.PedidoConUsuarioDTO;
 import cl.gdl.ms_pedido.dto.PedidoDTO;
 import cl.gdl.ms_pedido.dto.UsuarioDTO;
 import cl.gdl.ms_pedido.entity.DetallePedidoEntity;
+import cl.gdl.ms_pedido.entity.DireccionEntity;
 import cl.gdl.ms_pedido.entity.EntregaEntity;
 import cl.gdl.ms_pedido.entity.EstadoPedidoEntity;
 import cl.gdl.ms_pedido.entity.MedioDePagoEntity;
 import cl.gdl.ms_pedido.entity.PedidoEntity;
 import cl.gdl.ms_pedido.errors.NoDataException;
 import cl.gdl.ms_pedido.errors.NotFoundException;
+import cl.gdl.ms_pedido.repository.IDireccionRepository;
 import cl.gdl.ms_pedido.repository.IEntregaRepository;
 import cl.gdl.ms_pedido.repository.IEstadoPedidoRepository;
 import cl.gdl.ms_pedido.repository.IMedioDePagoRepository;
@@ -40,15 +42,28 @@ public class PedidoServiceImpl implements IPedidoService {
     @Autowired private IEstadoPedidoRepository estadoRepo;
     @Autowired private ICartaClient cartaClient;
     @Autowired private IUsuarioClient usuarioClient;
+    @Autowired private IDireccionRepository direccionRepository;
 
     @Override
     public PedidoDTO insert(PedidoDTO dto) {
         PedidoEntity pedido = new PedidoEntity();
 
         pedido.setIdUsuario(dto.getIdUsuario());
-        pedido.setMedioDePago(buscarMedioDePago(dto.getIdMedioDePago()));
-        pedido.setEntrega(buscarEntrega(dto.getIdEntrega()));
-        pedido.setEstadoPedido(buscarEstadoPedido(dto.getIdEstadoPedido()));
+        pedido.setMedioDePago(buscarMedioDePago(dto.getIdMedioDePago().getId()));
+        pedido.setEntrega(buscarEntrega(dto.getIdEntrega().getIdEntrega()));
+        pedido.setEstadoPedido(buscarEstadoPedido(dto.getIdEstadoPedido().getIdEstadoPedido()));
+
+
+
+    if (dto.getDireccion() != null && dto.getDireccion().getIdDireccion() != null) {
+        DireccionEntity direccion = direccionRepository.findById(dto.getDireccion().getIdDireccion())
+            .orElseThrow(() -> new NotFoundException("Dirección no encontrada"));
+        pedido.setDireccion(direccion); // o existing.setDireccion(direccion) en update
+    } else {
+        throw new NotFoundException("Debe proporcionar una dirección válida");
+    }
+
+
 
         AtomicReference<BigDecimal> total = new AtomicReference<>(BigDecimal.ZERO);
 
@@ -78,14 +93,15 @@ public class PedidoServiceImpl implements IPedidoService {
         return PedidoMapper.toDTO(saved);
     }
 
-   @Override
-public PedidoDTO update(UUID id, PedidoDTO dto) {
+    @Override
+    public PedidoDTO update(UUID id, PedidoDTO dto) {
     PedidoEntity existing = checkPedidoExists(id);
 
     existing.setIdUsuario(dto.getIdUsuario());
-    existing.setMedioDePago(buscarMedioDePago(dto.getIdMedioDePago()));
-    existing.setEntrega(buscarEntrega(dto.getIdEntrega()));
-    existing.setEstadoPedido(buscarEstadoPedido(dto.getIdEstadoPedido()));
+    existing.setMedioDePago(buscarMedioDePago(dto.getIdMedioDePago().getId()));
+    existing.setEntrega(buscarEntrega(dto.getIdEntrega().getIdEntrega()));
+    existing.setEstadoPedido(buscarEstadoPedido(dto.getIdEstadoPedido().getIdEstadoPedido()));
+
 
     AtomicReference<BigDecimal> total = new AtomicReference<>(BigDecimal.ZERO);
 
