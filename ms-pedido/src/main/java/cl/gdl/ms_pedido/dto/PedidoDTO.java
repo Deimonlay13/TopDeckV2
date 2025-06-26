@@ -21,11 +21,13 @@ public class PedidoDTO {
     
     private String idUsuario;
 
-    private UUID idMedioDePago;
+    private MedioDePagoDTO idMedioDePago;
 
-    private UUID idEntrega;
+    private DireccionDTO direccion;
 
-    private UUID idEstadoPedido;
+    private EntregaDTO idEntrega;
+
+    private EstadoPedidoDTO idEstadoPedido;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private BigDecimal total;
