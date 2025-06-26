@@ -78,16 +78,6 @@ public class DireccionServiceImpl implements IDireccionService {
         return dto;
     }
 
-    private DireccionEntity toEntity(DireccionDTO dto) {
-        DireccionEntity entity = new DireccionEntity();
-        entity.setIdDireccion(dto.getIdDireccion());
-        entity.setIdPersona(dto.getIdPersona());
-        entity.setIdComuna(dto.getIdComuna());
-        entity.setIdRegion(dto.getIdRegion());
-        entity.setDireccion(dto.getDireccion());
-        entity.setTelefono(dto.getTelefono());
-        return entity;
-    }
 }
 
 

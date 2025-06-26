@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ComunaDTO {
 
-    private String codigoComuna;
+    private Long codigoComuna;
     private String nombreComuna;
+    private Long regionId;
 }
