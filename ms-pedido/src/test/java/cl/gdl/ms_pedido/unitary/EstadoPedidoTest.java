@@ -10,16 +10,21 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import cl.gdl.ms_pedido.service.IEstadoPedidoService;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@ActiveProfiles("test") // Usa el profile test
+@ActiveProfiles("unit-test") // Usa el profile test
 public class EstadoPedidoTest {
-
+    @Autowired
+    ObjectMapper objectMapper;
+    
     @Autowired
     IEstadoPedidoService estadoPedidoService;
 
@@ -36,27 +41,60 @@ public class EstadoPedidoTest {
             .andExpect(status().isOk());
     }
 
+    @Transactional
     @Test
-    @DisplayName("Buscar Estado Pedido por ID manual")
+    @DisplayName("Buscar Estado Pedido por ID recién insertado")
     void testEstadoPedidoGetbyId() throws Exception {
-    // UUID manual que ya debe existir en la base de datos
-    String idEstadoPedido = "48c444ed-91ed-48d8-8802-93fabdec5063";
+            // 1. Inserta un estado de pedido
+            String requestBody = "{\"nameEstadoPedido\": \"pendiente\"}";
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/api/estado-pedido/getById/" + idEstadoPedido)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.idEstadoPedido").value(idEstadoPedido.toString()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.nameEstadoPedido").exists());
+            String response = mockMvc.perform(MockMvcRequestBuilders.post("/api/estado-pedido/insert")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(requestBody))
+                            .andExpect(status().isOk())
+                            .andReturn()
+                            .getResponse()
+                            .getContentAsString();
 
-    System.out.println("Se buscó el estado pedido con ID: " + idEstadoPedido);
+            // 2. Extrae el ID del estado insertado
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(response);
+            String idEstadoPedido = jsonNode.get("idEstadoPedido").asText();
+
+            // 3. Ejecuta el GET con el ID real
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/estado-pedido/getById/" + idEstadoPedido)
+                            .contentType(MediaType.APPLICATION_JSON))
+                            .andExpect(status().isOk())
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.idEstadoPedido").value(idEstadoPedido))
+                            .andExpect(MockMvcResultMatchers.jsonPath("$.nameEstadoPedido").value("pendiente"));
+
+            System.out.println("Se buscó el estado pedido con ID: " + idEstadoPedido);
     }
 
+    @Transactional
     @Test
-         void deleteOneRowFound() throws Exception {
-              String idEstadoPedido = "48c444ed-91ed-48d8-8802-93fabdec5063";
-                mockMvc.perform(MockMvcRequestBuilders.delete("/api/estado-pedido/delete/" + idEstadoPedido)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()); 
+    @DisplayName("Eliminar Estado Pedido recién insertado")
+    void deleteOneRowFound() throws Exception {
+            // 1. Insertamos un EstadoPedido
+            String requestBody = "{\"nameEstadoPedido\": \"en reparto\"}";
+
+            String response = mockMvc.perform(MockMvcRequestBuilders.post("/api/estado-pedido/insert")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(requestBody))
+                            .andExpect(status().isOk())
+                            .andReturn()
+                            .getResponse()
+                            .getContentAsString();
+
+            // 2. Extraemos el ID generado
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(response);
+            String idEstadoPedido = jsonNode.get("idEstadoPedido").asText();
+
+            // 3. Eliminamos ese EstadoPedido
+            mockMvc.perform(MockMvcRequestBuilders.delete("/api/estado-pedido/delete/" + idEstadoPedido)
+                            .contentType(MediaType.APPLICATION_JSON))
+                            .andExpect(status().isOk());
     }
 
 }

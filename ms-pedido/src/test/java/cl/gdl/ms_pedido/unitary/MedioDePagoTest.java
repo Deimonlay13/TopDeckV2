@@ -9,14 +9,17 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.MediaType;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cl.gdl.ms_pedido.service.IMedioDePagoService;
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@ActiveProfiles("test") // Usa el profile test
+@ActiveProfiles("unit-test") // Usa el profile test
 public class MedioDePagoTest {
 
     @Autowired
@@ -24,7 +27,8 @@ public class MedioDePagoTest {
 
     @Autowired
     MockMvc mockMvc;
-
+    
+    @Transactional
     @Test
     void createOneRow() throws Exception {  
     String requestBody = "{\"nombre\":\"arroz\"}";
@@ -33,31 +37,69 @@ public class MedioDePagoTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestBody))
             .andExpect(status().isOk());
+        System.out.println("POST Response: " + requestBody);
+            
     }
 
     @Test
-    @DisplayName("Buscar Medio de Pago por ID manual")
+    @Transactional
+    @DisplayName("Buscar Medio de Pago por ID recién insertado")
     void testBuscarMedioDePagoPorId() throws Exception {
-    // UUID manual de un medio de pago que ya debe existir en la base de datos
-    String idMedioDePago = "3eb98d4e-8a27-4b47-ac21-5cd17f5afc2e";
-
-    mockMvc.perform(MockMvcRequestBuilders.get("/api/medio-de-pago/" + idMedioDePago)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idMedioDePago))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.nombre").exists());
-
-    System.out.println("Se buscó medio de pago con ID: " + idMedioDePago);
-}
-
-        // este test puede generar error si no el medio de pago esta asociado a un pedido 
-        @Test
-         void deleteOneRowFound() throws Exception {
-              String idMedioDePago = "ef20b952-490b-427f-86f2-0272adfd20c7";
-                mockMvc.perform(MockMvcRequestBuilders.delete("/api/medio-de-pago/" + idMedioDePago)
+        // 1. Insertar un medio de pago
+        String requestBody = "{\"nombre\":\"Tarjeta Crédito\"}";
+    
+        String response = mockMvc.perform(MockMvcRequestBuilders.post("/api/medio-de-pago")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+    
+        // 2. Extraer el ID generado
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(response);
+        String idMedioDePago = jsonNode.get("id").asText();
+    
+        // 3. Hacer la búsqueda GET con el ID generado
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/medio-de-pago/" + idMedioDePago)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()); 
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idMedioDePago))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nombre").value("Tarjeta Crédito"));
+    
+        System.out.println("Se buscó medio de pago con ID: " + idMedioDePago);
     }
 
+    @Test
+    @Transactional
+    void deleteOneRowFound() throws Exception {
+        // 1. Insertar medio de pago
+        String requestBody = "{\"nombre\":\"Medio para borrar\"}";
+    
+        String response = mockMvc.perform(MockMvcRequestBuilders.post("/api/medio-de-pago")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+    
+        // 2. Extraer el ID generado
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(response);
+        String idMedioDePago = jsonNode.get("id").asText();
+    
+        // 3. Borrar el medio de pago recién creado
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/medio-de-pago/" + idMedioDePago)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    
+        // 4. validar que ya no exista (GET espera 404)
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/medio-de-pago/" + idMedioDePago)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
 
+  
 }
