@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegionDTO {
 
-    private String codigoRegion;
-    private String nombregoRegion;
+    private Long codigoRegion;
+    private String nombreRegion;
+    
 
 }
