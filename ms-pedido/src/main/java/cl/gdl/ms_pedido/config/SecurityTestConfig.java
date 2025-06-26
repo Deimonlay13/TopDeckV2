@@ -6,17 +6,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+@Profile("test") // <-- Esta config se activa solo con perfil test
 @Configuration
-@Profile("!test")
-public class SecurityConfig {
+public class SecurityTestConfig {
+
+    //  desactiva seguridad para el perfil test
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {
-                })
-                );
+    public SecurityFilterChain testFilterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()); //  desactiva seguridad
 
         return http.build();
     }
