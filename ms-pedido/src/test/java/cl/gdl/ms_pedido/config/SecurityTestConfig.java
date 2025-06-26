@@ -13,9 +13,12 @@ public class SecurityTestConfig {
     //  desactiva seguridad para el perfil test
     @Bean
     public SecurityFilterChain testFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()); //  desactiva seguridad
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
         return http.build();
     }
 }
+
+
