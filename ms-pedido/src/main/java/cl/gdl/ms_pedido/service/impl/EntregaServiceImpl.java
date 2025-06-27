@@ -27,6 +27,7 @@ public class EntregaServiceImpl implements IEntregaService {
         checkDescripcionNotExists(dto.getEntrega());
 
         EntregaEntity entidad = new EntregaEntity();
+        entidad.setId(dto.getIdEntrega());
         entidad.setDescripcion(dto.getEntrega());
 
         entidad = entregaRepository.save(entidad);

@@ -156,15 +156,14 @@ public class PedidoServiceImpl implements IPedidoService {
         return PedidoMapper.toDTO(checkPedidoExists(id));
     }
 
+    @Override
     public PedidoConUsuarioDTO getPedidoConUsuario(UUID idPedido) {
         PedidoEntity pedido = checkPedidoExists(idPedido);
-        System.out.println("LLAMANDO A MS-USERS");
-        System.out.println("Id usuario pedido: " + pedido.getIdUsuario());
         UsuarioDTO usuario = usuarioClient.getUsuarioById(pedido.getIdUsuario());
-        System.out.println("Usuario obtenido: " + usuario);        
 
-        return new PedidoConUsuarioDTO(pedido, usuario);
-    }    
+        PedidoDTO pedidoDTO = PedidoMapper.toDTO(pedido);
+        return new PedidoConUsuarioDTO(pedidoDTO, usuario);
+    }
 
     @Override
     public List<PedidoDTO> getAll() {
