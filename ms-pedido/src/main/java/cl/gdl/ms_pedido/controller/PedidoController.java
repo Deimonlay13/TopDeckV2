@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,12 +32,18 @@ public class PedidoController {
         List<PedidoDTO> pedidos = pedidoService.getAll();
         return ResponseEntity.ok(pedidos);
     }
+@GetMapping("/{id}")
+public ResponseEntity<EntityModel<PedidoDTO>> getPedidoById(@PathVariable UUID id) {
+    PedidoDTO pedido = pedidoService.getById(id);
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PedidoDTO> getPedidoById(@PathVariable UUID id) {
-        PedidoDTO pedido = pedidoService.getById(id);
-        return ResponseEntity.ok(pedido);
-    }
+    EntityModel<PedidoDTO> pedidoModel = EntityModel.of(pedido,
+        WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PedidoController.class).getPedidoById(id)).withSelfRel(),
+        WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PedidoController.class).getAllPedidos()).withRel("todos"),
+        WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PedidoController.class).deletePedido(id)).withRel("eliminar")
+    );
+
+    return ResponseEntity.ok(pedidoModel);
+}
 
     @PostMapping
     public ResponseEntity<PedidoDTO> createPedido(@RequestBody PedidoDTO dto) {

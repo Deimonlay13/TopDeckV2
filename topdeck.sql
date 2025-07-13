@@ -1,67 +1,4 @@
 
-CREATE TABLE stage(
-    id_stage RAW(16) DEFAULT SYS_GUID(),
-    stage VARCHAR2(20) NOT NULL,
-    CONSTRAINT PK_STAGE PRIMARY KEY (id_stage),
-    CONSTRAINT UQ_STAGE UNIQUE (stage)
-);
-
-CREATE TABLE edicion(
-    id_edicion RAW(16) DEFAULT SYS_GUID(),
-    edicion VARCHAR2(20) NOT NULL,
-    CONSTRAINT PK_EDICION PRIMARY KEY (id_edicion),
-    CONSTRAINT UQ_EDICION UNIQUE (edicion)
-);
-
-CREATE TABLE tipo(
-    id_tipo RAW(16) DEFAULT SYS_GUID(),
-    tipo VARCHAR2(20) NOT NULL,
-    CONSTRAINT PK_TIPO PRIMARY KEY (id_tipo),
-    CONSTRAINT UQ_TIPO UNIQUE (tipo)
-);
-
-CREATE TABLE condicion(
-    id_condicion RAW(16) DEFAULT SYS_GUID(),
-    condicion VARCHAR2(20) NOT NULL,
-    CONSTRAINT PK_CONDICION PRIMARY KEY (id_condicion),
-    CONSTRAINT UQ_CONDICION UNIQUE (condicion)
-);
-
-CREATE TABLE categoria(
-    id_categoria RAW(16) DEFAULT SYS_GUID(),
-    categoria VARCHAR2(20) NOT NULL,
-    CONSTRAINT PK_CATEGORIA PRIMARY KEY (id_categoria),
-    CONSTRAINT UQ_CATEGORIA UNIQUE (categoria)
-);
-
-CREATE TABLE rareza(
-    id_rareza RAW(16) DEFAULT SYS_GUID(),
-    rareza VARCHAR2(20) NOT NULL,
-    CONSTRAINT PK_RAREZA PRIMARY KEY (id_rareza),
-    CONSTRAINT UQ_RAREZA UNIQUE (rareza)
-);
-
-CREATE TABLE energia(
-    id_energia RAW(16) DEFAULT SYS_GUID(),
-    energia VARCHAR2(20) NOT NULL,
-    CONSTRAINT PK_ENERGIA PRIMARY KEY (id_energia),
-    CONSTRAINT UQ_ENERGIA UNIQUE (energia)
-);
-
-CREATE TABLE idioma(
-    id_idioma RAW(16) DEFAULT SYS_GUID(),
-    idioma VARCHAR2(20) NOT NULL,
-    CONSTRAINT PK_IDIOMA PRIMARY KEY (id_idioma),
-    CONSTRAINT UQ_IDIOMA UNIQUE (idioma)
-);
-
-CREATE TABLE marca(
-    id_marca RAW(16) DEFAULT SYS_GUID(),
-    marca VARCHAR2(20) NOT NULL,
-    CONSTRAINT PK_MARCA PRIMARY KEY (id_marca),
-    CONSTRAINT UQ_MARCA UNIQUE (marca)
-);
-
 CREATE TABLE medio_de_pago(
     id_medio_de_pago RAW(16) DEFAULT SYS_GUID(),
     medio_de_pago VARCHAR2(20) NOT NULL,
@@ -118,46 +55,6 @@ CREATE TABLE persona (
     CONSTRAINT UQ_PERSONA_EMAIL UNIQUE (LOWER(email))
 );
 
-CREATE TABLE carta(
-    nro_carta NUMBER NOT NULL,
-    nom_carta VARCHAR2(20) NOT NULL,
-    descripcion VARCHAR2(255) NOT NULL,
-    precio NUMBER NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    imagen BLOB,
-    id_marca RAW(16) NOT NULL,
-    id_stage RAW(16) NOT NULL,
-    id_edicion RAW(16) NOT NULL,
-    id_tipo RAW(16) NOT NULL,
-    id_condicion RAW(16) NOT NULL,
-    id_categoria RAW(16) NOT NULL,
-    id_rareza RAW(16) NOT NULL,
-    id_energia RAW(16) NOT NULL,
-    id_idioma RAW(16) NOT NULL,
-    id_estado RAW(16) NOT NULL,
-    CONSTRAINT PK_NRO_CARTA PRIMARY KEY (nro_carta),
-    CONSTRAINT UQ_NOM_CARTA UNIQUE (nom_carta),
-    CONSTRAINT FK_CARTA_MARCA FOREIGN KEY(id_marca) REFERENCES marca(id_marca),
-    CONSTRAINT FK_CARTA_STAGE FOREIGN KEY(id_stage) REFERENCES stage(id_stage),
-    CONSTRAINT FK_CARTA_EDICION FOREIGN KEY(id_edicion) REFERENCES edicion(id_edicion),
-    CONSTRAINT FK_CARTA_TIPO FOREIGN KEY(id_tipo) REFERENCES tipo(id_tipo),
-    CONSTRAINT FK_CARTA_CONDICION FOREIGN KEY(id_condicion) REFERENCES condicion(id_condicion),
-    CONSTRAINT FK_CARTA_CATEGORIA FOREIGN KEY(id_categoria) REFERENCES categoria(id_categoria),
-    CONSTRAINT FK_CARTA_RAREZA FOREIGN KEY(id_rareza) REFERENCES rareza(id_rareza),
-    CONSTRAINT FK_CARTA_ENERGIA FOREIGN KEY(id_energia) REFERENCES energia(id_energia),
-    CONSTRAINT FK_CARTA_IDIOMA FOREIGN KEY(id_idioma) REFERENCES idioma(id_idioma),
-    CONSTRAINT FK_CARTA_ESTADO FOREIGN KEY(id_estado) REFERENCES estado(id_estado)
-);
-
-CREATE TABLE sobre (
-    id_sobre RAW(16) DEFAULT SYS_GUID(),
-    nombre VARCHAR2(30) NOT NULL,
-    precio NUMBER NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT PK_SOBRE PRIMARY KEY (id_sobre),
-    CONSTRAINT UQ_NOMBRE UNIQUE (nombre)
-);
-
 CREATE TABLE estado_pedido (
     id_estado_pedido RAW(16) DEFAULT SYS_GUID(),
     estado VARCHAR2(20) NOT NULL,
@@ -203,18 +100,4 @@ CREATE TABLE direccion (
     CONSTRAINT PK_DIRECCION PRIMARY KEY (id_direccion),
     CONSTRAINT FK_DIRECCION_PERSONA FOREIGN KEY (id_persona) REFERENCES persona(id_persona),
     CONSTRAINT FK_DIRECCION_COMUNA FOREIGN KEY (id_comuna) REFERENCES comuna(id_comuna)
-);
-
-CREATE TABLE comentario (
-    id_comentario RAW(16) DEFAULT SYS_GUID(),
-    id_persona RAW(16) NOT NULL,
-    nro_carta NUMBER,
-    id_sobre RAW(16),
-    comentario VARCHAR2(500) NOT NULL,
-    calificacion NUMBER(1) CHECK (calificacion BETWEEN 1 AND 5),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT PK_COMENTARIO PRIMARY KEY (id_comentario),
-    CONSTRAINT FK_COMENTARIO_PERSONA FOREIGN KEY (id_persona) REFERENCES persona(id_persona),
-    CONSTRAINT FK_COMENTARIO_CARTA FOREIGN KEY (nro_carta) REFERENCES carta(nro_carta),
-    CONSTRAINT FK_COMENTARIO_SOBRE FOREIGN KEY (id_sobre) REFERENCES sobre(id_sobre)
 );
